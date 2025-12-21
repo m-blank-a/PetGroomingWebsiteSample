@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Avenue - Meet the Team</title>
+  <style>
+    :root {
+      --main: #84BD4E;
+      --dark: #2f3a2e;
+      --light: #f6fbf2;
+      --custom-green: #b3ff51;
+      --custom-yellow: #ffed51;
+      --sb-track: rgba(132, 189, 78, 0.1);
+      --sb-thumb: rgba(132, 189, 78, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--sb-track); }
+    ::-webkit-scrollbar-thumb {
+      background: var(--sb-thumb);
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+    ::-webkit-scrollbar-thumb:hover { background-color: var(--main); }
+
+    body {
+      margin: 0;
+      background: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    header {
+      background: var(--main);
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .logo-container { display: flex; align-items: center; gap: 12px; }
+    header h1 { margin: 0; color: white; font-size: 24px; }
+
+    nav { display: flex; align-items: center; flex-wrap: wrap; }
+    nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+    nav a:hover { transform: translateY(-2px); color: var(--custom-yellow); }
+
+    .logout-btn {
+      background: rgba(0,0,0,0.1);
+      padding: 6px 12px;
+      border-radius: 4px;
+    }
+
+    /* Hero */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: linear-gradient(135deg, var(--custom-green) 0%, #84BD4E 100%);
+      color: white;
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      transition: height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 10;
+    }
+
+    .hero.shrunk { height: 300px; }
+
+    .hero h2 {
+      font-size: clamp(2rem, 8vw, 4rem);
+      margin: 0;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+      transition: font-size 0.7s ease;
+    }
+
+    .hero.shrunk h2 { font-size: 38px; }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 30px;
+      font-size: 24px;
+      animation: bounce 2s infinite;
+      transition: opacity 0.4s ease;
+    }
+    .hero.shrunk .scroll-indicator { opacity: 0; pointer-events: none; }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+      40% {transform: translateY(-10px);}
+      60% {transform: translateY(-5px);}
+    }
+
+    .content-area {
+      position: relative;
+      z-index: 5;
+      background: var(--light);
+      min-height: 100vh;
+    }
+
+    /* Team Section */
+    .team-viewer {
+      position: relative;
+      height: 650px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 2000px;
+      margin: 40px 0;
+      overflow: visible;
+    }
+
+    .cards-wrapper {
+      position: relative;
+      width: 280px;
+      height: 400px; 
+      transform-style: preserve-3d;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .team-card {
+      position: absolute;
+      inset: 0;
+      background: var(--main);
+      border-radius: 24px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      backface-visibility: hidden;
+      transition: transform 0.8s, opacity 0.8s, filter 0.8s;
+      overflow: visible;
+    }
+
+    .profile-circle {
+      width: 110px;
+      height: 110px;
+      border: 4px solid var(--custom-yellow);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .profile-circle svg { width: 60px; height: 60px; fill: white; }
+
+    .team-card h3 {
+      font-size: 18px;
+      margin: 10px 0 0 0; 
+      text-align: center;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .role-container {
+      width: 100%;
+      position: relative;
+      margin-top: 15px;
+    }
+
+    .role-trigger {
+      width: 100%;
+      background: var(--custom-yellow);
+      color: var(--dark);
+      padding: 10px 5px;
+      border-radius: 10px;
+      font-weight: 900;
+      cursor: pointer;
+      font-size: 12px;
+      text-transform: uppercase;
+      text-align: center;
+      transition: background 0.3s ease, opacity 0.3s ease;
+      user-select: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .role-trigger:hover { background: white; }
+    
+    /* Disable interaction for unfocused cards via CSS */
+    .team-card:not(.CardFocused) .role-trigger {
+      pointer-events: none;
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .role-modal {
+      position: absolute;
+      top: 115%; 
+      left: 0;
+      right: 0;
+      background: white;
+      color: var(--dark);
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease-in-out;
+      z-index: 50;
+    }
+    .role-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .fb-link { position: absolute; top: 12px; right: 12px; }
+    .fb-link svg { width: 20px; height: 20px; fill: var(--main); }
+
+    .modal-text { font-size: 12px; line-height: 1.4; padding-right: 20px; }
+    .modal-text strong { color: var(--main); display: block; margin-bottom: 4px; font-size: 13px; }
+
+    /* Nav Buttons */
+    .side-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 60px;
+      height: 60px;
+      background: var(--main);
+      border: 4px solid white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 500;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+    .side-nav:hover { background: var(--custom-yellow); transform: translateY(-50%) scale(1.1); }
+    .side-nav svg { width: 24px; height: 24px; fill: white; }
+    .nav-left { left: 5%; }
+    .nav-right { right: 5%; }
+
+    footer {
+      background: var(--main);
+      color: white;
+      text-align: center;
+      padding: 30px 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Logo" style="height:48px;">
+      <h1>Pet Avenue</h1>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="Pet Avenue Services.html">Services</a>
+      <a href="#">About Us</a>
+      <a href="#">Message Us</a>
+      <a href="#">username</a>
+      <a href="#" class="logout-btn">Log-out</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="infoHero">
+    <h2>Meet Our Team</h2>
+    <div class="scroll-indicator">↓ Scroll to Explore More ↓</div>
+  </section>
+
+  <div class="content-area">
+    <section class="team-viewer">
+      <div class="side-nav nav-left" onclick="rotate(-1)">
+        <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+      </div>
+      <div class="side-nav nav-right" onclick="rotate(1)">
+        <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      </div>
+
+      <div class="cards-wrapper" id="carousel">
+        <div class="team-card" data-index="0">
+          <div class="profile-circle"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+          <h3>Stephen Christian Magsayo</h3>
+          <div class="role-container">
+            <div class="role-trigger">DevOps Project Manager</div>
+            <div class="role-modal">
+              <a href="#" class="fb-link"><svg viewBox="0 0 24 24"><path d="M12 2.04c-5.5 0-10 4.49-10 10.02 0 5 3.66 9.15 8.44 9.9v-7h-2.54v-2.9h2.54v-2.21c0-2.51 1.49-3.89 3.78-3.89 1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02z"/></svg></a>
+              <div class="modal-text"><strong>Responsible for...</strong>Coordinating backend infrastructure and systems to ensure maximum uptime.</div>
+            </div>
+          </div>
+        </div>
+        <div class="team-card" data-index="1">
+          <div class="profile-circle"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+          <h3>Karol Josef Torregosa</h3>
+          <div class="role-container">
+            <div class="role-trigger">Lead UI/UX Designer</div>
+            <div class="role-modal">
+              <a href="#" class="fb-link"><svg viewBox="0 0 24 24"><path d="M12 2.04c-5.5 0-10 4.49-10 10.02 0 5 3.66 9.15 8.44 9.9v-7h-2.54v-2.9h2.54v-2.21c0-2.51 1.49-3.89 3.78-3.89 1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02z"/></svg></a>
+              <div class="modal-text"><strong>Responsible for...</strong>Leading the creative vision, visual identity, and user interface designs.</div>
+            </div>
+          </div>
+        </div>
+        <div class="team-card" data-index="2">
+          <div class="profile-circle"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+          <h3>Stephen Biton, Jr.</h3>
+          <div class="role-container">
+            <div class="role-trigger">Frontend Developer</div>
+            <div class="role-modal">
+              <a href="#" class="fb-link"><svg viewBox="0 0 24 24"><path d="M12 2.04c-5.5 0-10 4.49-10 10.02 0 5 3.66 9.15 8.44 9.9v-7h-2.54v-2.9h2.54v-2.21c0-2.51 1.49-3.89 3.78-3.89 1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02z"/></svg></a>
+              <div class="modal-text"><strong>Responsible for...</strong>Specializing in React development, custom hooks, and complex animations.</div>
+            </div>
+          </div>
+        </div>
+        <div class="team-card" data-index="3">
+          <div class="profile-circle"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+          <h3>Leur Matthew Lofranco</h3>
+          <div class="role-container">
+            <div class="role-trigger">Frontend Developer</div>
+            <div class="role-modal">
+              <a href="#" class="fb-link"><svg viewBox="0 0 24 24"><path d="M12 2.04c-5.5 0-10 4.49-10 10.02 0 5 3.66 9.15 8.44 9.9v-7h-2.54v-2.9h2.54v-2.21c0-2.51 1.49-3.89 3.78-3.89 1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02z"/></svg></a>
+              <div class="modal-text"><strong>Responsible for...</strong>Expertise in building responsive layouts and ensuring cross-browser performance.</div>
+            </div>
+          </div>
+        </div>
+        <div class="team-card" data-index="4">
+          <div class="profile-circle"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+          <h3>Walter Villavelez</h3>
+          <div class="role-container">
+            <div class="role-trigger">QA Tester</div>
+            <div class="role-modal">
+              <a href="#" class="fb-link"><svg viewBox="0 0 24 24"><path d="M12 2.04c-5.5 0-10 4.49-10 10.02 0 5 3.66 9.15 8.44 9.9v-7h-2.54v-2.9h2.54v-2.21c0-2.51 1.49-3.89 3.78-3.89 1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02z"/></svg></a>
+              <div class="modal-text"><strong>Responsible for...</strong>Ensuring software quality through rigorous testing and usability standards.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2025 Pet Avenue. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Shrinking scroll
+    window.addEventListener('scroll', () => {
+      const hero = document.getElementById('infoHero');
+      if (window.scrollY > 50) hero.classList.add('shrunk');
+      else hero.classList.remove('shrunk');
+    });
+
+    // Carousel Logic
+    let currentRotation = 0;
+    const cards = document.querySelectorAll('.team-card');
+    const totalCards = cards.length;
+    const angleStep = 360 / totalCards;
+
+    function updateCards() {
+      cards.forEach((card, i) => {
+        const index = parseInt(card.dataset.index);
+        const angle = (index * angleStep) + currentRotation;
+        const translateZ = 550; 
+        
+        // REVERTED TRANSFORMATION: translateZ before rotateY to keep faces user-facing
+        card.style.transform = `rotateY(${angle}deg) translateZ(${translateZ}px) rotateY(${-angle}deg)`;
+        
+        const normalizedAngle = ((angle % 360) + 360) % 360;
+        // Focused range: within 20 degrees of front center
+        if (normalizedAngle < 20 || normalizedAngle > 340) {
+          card.style.opacity = "1";
+          card.style.zIndex = "100";
+          card.style.filter = "none";
+          card.classList.add('CardFocused'); // User-requested class
+        } else if (normalizedAngle < 90 || normalizedAngle > 270) {
+          card.style.opacity = "0.7";
+          card.style.zIndex = "50";
+          card.style.filter = "blur(1px) brightness(0.8)";
+          card.classList.remove('CardFocused');
+        } else {
+          card.style.opacity = "0.2";
+          card.style.zIndex = "10";
+          card.style.filter = "blur(4px) brightness(0.5)";
+          card.classList.remove('CardFocused');
+        }
+      });
+    }
+
+    function rotate(direction) {
+      document.querySelectorAll('.role-modal').forEach(m => m.classList.remove('active'));
+      currentRotation -= direction * angleStep;
+      updateCards();
+    }
+
+    document.querySelectorAll('.role-trigger').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const modal = btn.nextElementSibling; 
+        const isActive = modal.classList.contains('active');
+        document.querySelectorAll('.role-modal').forEach(m => m.classList.remove('active'));
+        if (!isActive) modal.classList.add('active');
+      });
+    });
+
+    updateCards();
+  </script>
+</body>
+</html>

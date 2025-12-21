@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Avenue - Official Receipt</title>
+  <style>
+    :root {
+      --main: #84BD4E;
+      --dark: #2f3a2e;
+      --light: #f6fbf2;
+      --custom-green: #b3ff51;
+      --custom-yellow: #ffed51;
+      --template-gray: #e0e0e0;
+      /* Scrollbar Specific Colors */
+      --sb-track: rgba(132, 189, 78, 0.1); 
+      --sb-thumb: rgba(132, 189, 78, 0.6); 
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* Custom Scrollbar Styles */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--sb-track);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--sb-thumb);
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: var(--main);
+    }
+
+    /* Firefox Support */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--sb-thumb) var(--sb-track);
+    }
+
+    body {
+      margin: 0;
+      background: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding-top: 80px; /* Space for fixed header */
+    }
+
+    /* Fixed Header from Services.html */
+    header {
+      background: var(--main);
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .logo-container {
+      display: flex; 
+      align-items: center; 
+      gap: 12px;
+    }
+
+    header h1 {
+      margin: 0;
+      color: white;
+      font-size: 24px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    nav a:hover {
+      transform: translateY(-2px);
+      color: var(--custom-yellow);
+    }
+
+    .logout-btn {
+      background: rgba(0,0,0,0.1);
+      padding: 6px 12px;
+      border-radius: 4px;
+    }
+
+    /* Receipt Specific Styles */
+    .receipt-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 80px);
+      padding: 40px 20px;
+    }
+
+    .receipt-paper {
+      background: white;
+      width: 100%;
+      max-width: 500px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      position: relative;
+      font-family: 'Courier New', Courier, monospace; /* Monospace for receipt feel */
+      color: #333;
+      border-top: 10px solid var(--main);
+    }
+
+    /* Jagged edge effect at bottom */
+    .receipt-paper::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -10px;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(135deg, white 50%, transparent 50%), linear-gradient(45deg, white 50%, transparent 50%);
+      background-size: 20px 20px;
+      background-repeat: repeat-x;
+    }
+
+    .receipt-header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 2px dashed #ddd;
+      padding-bottom: 20px;
+    }
+
+    .receipt-header h2 {
+      margin: 0 0 10px 0;
+      color: var(--dark);
+      font-family: Arial, Helvetica, sans-serif; /* Keep brand name in sans */
+      font-size: 24px;
+    }
+
+    .receipt-info {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .receipt-body {
+      margin-bottom: 30px;
+    }
+
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .divider {
+      border-top: 1px dashed #ddd;
+      margin: 15px 0;
+    }
+
+    .totals-section {
+      font-size: 13px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .bold {
+      font-weight: bold;
+    }
+
+    .grand-total {
+      font-size: 18px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 2px solid #333;
+    }
+
+    /* Button Style inherited from Services.html */
+    .btn-action {
+      margin-top: 40px;
+      background: var(--main);
+      color: white;
+      padding: 15px 40px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      display: inline-block;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px rgba(132, 189, 78, 0.3);
+      border: none;
+      cursor: pointer;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .btn-action:hover {
+      transform: scale(1.05);
+      background-color: var(--custom-yellow);
+      color: var(--dark);
+      box-shadow: 0 15px 30px rgba(255, 237, 81, 0.4);
+    }
+
+    @media (max-width: 600px) {
+      .receipt-paper {
+        padding: 20px;
+      }
+      header {
+        flex-direction: column;
+        padding: 20px;
+      }
+      nav {
+        margin-top: 15px;
+        justify-content: center;
+      }
+      nav a {
+        margin: 5px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Pet Avenue Logo" style="height:48px; width:auto;">
+      <h1>Pet Avenue</h1>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="Pet Avenue Services.html">Services</a>
+      <a href="Pet Avenue Info.html">About Us</a>
+      <a href="#">Message Us</a>
+      <a href="#">username</a>
+      <a href="#" class="logout-btn">Log-out</a>
+    </nav>
+  </header>
+
+  <div class="receipt-wrapper">
+    <div class="receipt-paper">
+      <div class="receipt-header">
+        <h2>Pet Avenue</h2>
+        <div class="receipt-info">
+          <div>TIN: 000-0067-42069</div>
+          <div>Date: <span id="r-date"></span></div>
+          <div>Order # <span id="r-order-num"></span></div>
+          <div>Appt: <span id="r-appt"></span></div>
+        </div>
+      </div>
+
+      <div class="receipt-body" id="r-items">
+        <!-- JS generated items -->
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="totals-section">
+        <div class="total-row">
+          <span>Subtotal</span>
+          <span id="r-subtotal"></span>
+        </div>
+        <div class="divider" style="margin: 5px 0; border-top: 1px dotted #ccc;"></div>
+        <div class="total-row">
+          <span>VATable Sales</span>
+          <span id="r-vatable"></span>
+        </div>
+        <div class="total-row">
+          <span>VAT Amount</span>
+          <span id="r-vat-amt"></span>
+        </div>
+        <div class="total-row">
+          <span>Zero-rated Sales</span>
+          <span>0.00</span>
+        </div>
+        <div class="total-row">
+          <span>VAT-Exempt Sales</span>
+          <span>0.00</span>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="total-row bold" style="margin-bottom: 10px;">
+          <span>Total Sales</span>
+          <span id="r-total-sales"></span>
+        </div>
+        
+        <div class="total-row">
+          <span>Less: VAT</span>
+          <span id="r-less-vat"></span>
+        </div>
+        <div class="total-row">
+          <span>Add: VAT</span>
+          <span id="r-add-vat"></span>
+        </div>
+        
+        <div class="total-row grand-total bold">
+          <span>Total Amount Due</span>
+          <span id="r-grand-total"></span>
+        </div>
+      </div>
+    </div>
+
+    <a href="Pet Avenue User.html" class="btn-action">Back to your Page</a>
+  </div>
+
+  <script>
+    function generateRandomReceipt() {
+      // 1. Generate Order Number
+      const orderNum = Math.floor(100000 + Math.random() * 900000);
+      document.getElementById('r-order-num').innerText = orderNum;
+
+      // 2. Dates
+      const now = new Date();
+      document.getElementById('r-date').innerText = now.toLocaleDateString();
+
+      // Random future appointment date
+      const apptDate = new Date(now);
+      apptDate.setDate(now.getDate() + Math.floor(Math.random() * 14) + 1);
+      apptDate.setHours(9 + Math.floor(Math.random() * 8), 0, 0); // 9AM to 5PM
+      const timeStr = apptDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      document.getElementById('r-appt').innerText = `${apptDate.toLocaleDateString()} ${timeStr}`;
+
+      // 3. Random Items
+      const services = [
+        { name: "Full Grooming (Dog)", price: 500 },
+        { name: "Bath & Blowdry", price: 350 },
+        { name: "Nail Trim", price: 150 },
+        { name: "Full Grooming (Cat)", price: 600 },
+        { name: "Dematting", price: 300 },
+        { name: "Organic Shampoo", price: 50 }
+      ];
+
+      // Pick 1-3 random services
+      const itemCount = Math.floor(Math.random() * 3) + 1;
+      let totalAmount = 0;
+      let itemsHtml = '';
+
+      for(let i=0; i<itemCount; i++) {
+        const item = services[Math.floor(Math.random() * services.length)];
+        totalAmount += item.price;
+        itemsHtml += `
+          <div class="item-row">
+            <span>${item.name}</span>
+            <span>${item.price.toFixed(2)}</span>
+          </div>
+        `;
+      }
+      document.getElementById('r-items').innerHTML = itemsHtml;
+
+      // 4. Calculations
+      const subtotal = totalAmount;
+      const vatRate = 0.12;
+      const vatableSales = subtotal / (1 + vatRate);
+      const vatAmount = subtotal - vatableSales;
+
+      // Update DOM
+      document.getElementById('r-subtotal').innerText = subtotal.toFixed(2);
+      document.getElementById('r-vatable').innerText = vatableSales.toFixed(2);
+      document.getElementById('r-vat-amt').innerText = vatAmount.toFixed(2);
+      document.getElementById('r-total-sales').innerText = subtotal.toFixed(2);
+      
+      // The logic requested: Less VAT then Add VAT (Standard receipt display flow)
+      document.getElementById('r-less-vat').innerText = `(${vatAmount.toFixed(2)})`;
+      document.getElementById('r-add-vat').innerText = vatAmount.toFixed(2);
+      
+      document.getElementById('r-grand-total').innerText = "PHP " + subtotal.toFixed(2);
+    }
+
+    window.onload = generateRandomReceipt;
+  </script>
+
+</body>
+</html>

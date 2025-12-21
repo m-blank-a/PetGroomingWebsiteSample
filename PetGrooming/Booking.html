@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Avenue - Book Appointment</title>
+  <style>
+    :root {
+      --main: #84BD4E;
+      --dark: #2f3a2e;
+      --light: #f6fbf2;
+      --custom-green: #b3ff51;
+      --custom-yellow: #ffed51;
+      --white: #ffffff;
+      --gray: #f0f0f0;
+      
+      /* Scrollbar Specific Colors from Pet Avenue.html */
+      --sb-track: rgba(132, 189, 78, 0.1); 
+      --sb-thumb: rgba(132, 189, 78, 0.6); 
+    }
+
+    * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+
+    /* Custom Scrollbar Styles */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--sb-track); }
+    ::-webkit-scrollbar-thumb {
+      background: var(--sb-thumb);
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+    ::-webkit-scrollbar-thumb:hover { background-color: var(--main); }
+
+    body {
+      margin: 0;
+      background: var(--light);
+      color: var(--dark);
+      padding-top: 80px;
+      min-height: 100vh;
+    }
+
+    /* HEADER - Exact copy from Pet Avenue.html design */
+    header {
+      background: var(--main);
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .logo-container { display: flex; align-items: center; gap: 12px; }
+    header h1 { margin: 0; color: white; font-size: 24px; }
+    
+    nav { display: flex; align-items: center; flex-wrap: wrap; }
+    nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+    nav a:hover { transform: translateY(-2px); color: var(--custom-yellow); }
+
+    .logout-btn {
+      background: rgba(0,0,0,0.1);
+      padding: 6px 12px;
+      border-radius: 4px;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    h2 { color: var(--main); font-size: 28px; margin-top: 0; margin-bottom: 25px; border-bottom: 2px solid var(--gray); padding-bottom: 10px; }
+    
+    /* Panels */
+    .panel { display: none; animation: fadeIn 0.5s ease; }
+    .panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Form Elements */
+    label { font-weight: bold; font-size: 14px; color: #555; margin-bottom: 5px; display: block; }
+    select, input {
+      width: 100%; padding: 12px; border: 2px solid var(--gray);
+      border-radius: 10px; margin-bottom: 15px; outline: none; font-size: 15px;
+    }
+    select:focus, input:focus { border-color: var(--main); }
+
+    /* Buttons */
+    .btn-row { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
+    
+    .btn {
+      background: var(--main);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      border: 2px solid var(--main);
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+      background-color: var(--custom-yellow);
+      color: var(--dark);
+      border-color: var(--custom-yellow);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Back Button (Swapped Colors) */
+    .btn-back {
+      background: white;
+      color: var(--main);
+    }
+
+    /* Cart / Service List */
+    .cart-container { margin-bottom: 30px; }
+    .cart-header { display: grid; grid-template-columns: 3fr 1fr 1fr 40px; gap: 10px; font-weight: bold; font-size: 12px; color: #888; padding: 0 10px 5px; border-bottom: 1px solid #eee; }
+    .cart-item {
+      display: grid; grid-template-columns: 3fr 1fr 1fr 40px; gap: 10px;
+      align-items: center; background: #f9f9f9; padding: 15px 10px;
+      border-radius: 8px; margin-top: 10px; border-left: 4px solid var(--main);
+    }
+    .item-name { font-weight: bold; font-size: 15px; }
+    .item-price { font-size: 12px; color: var(--main); }
+    .qty-input { text-align: center; margin-bottom: 0; }
+    .trash-btn {
+      background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .trash-btn:hover { color: #d63031; transform: scale(1.1); }
+
+    /* Calendar */
+    .calendar-container { margin-top: 30px; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 10px; }
+    .day-cell {
+      background: var(--gray); padding: 15px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s;
+    }
+    .day-cell:hover:not(.disabled) { background: #d4edda; }
+    .day-cell.selected { background: var(--main); color: white; }
+    .day-cell.disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Time Modal */
+    .time-selector-container {
+        margin-top: 20px;
+        background: #fafafa;
+        border: 1px solid #eee;
+        border-radius: 12px;
+        padding: 20px;
+        display: none; /* Hidden until date selected */
+        text-align: center;
+    }
+    .time-scroll-box {
+        height: 100px;
+        overflow-y: scroll;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        margin: 10px 0;
+    }
+    .time-slot { padding: 10px; cursor: pointer; }
+    .time-slot:hover { background: #eee; }
+    .time-slot.selected { background: var(--custom-yellow); font-weight: bold; }
+
+    /* Payment Panel Layout */
+    .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .method-option {
+        padding: 20px; border: 2px solid var(--gray); border-radius: 12px; margin-bottom: 15px;
+        cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: bold; transition: 0.3s;
+    }
+    .method-option:hover, .method-option.selected { border-color: var(--main); background: #f0fdf4; }
+    
+    .invoice {
+        background: #fdfdfd; border: 1px dashed #ccc; padding: 25px; border-radius: 4px;
+        font-family: 'Courier New', Courier, monospace;
+    }
+    .invoice-head { font-weight: bold; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+    .invoice-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+    .invoice-divider { border-top: 1px dashed #ccc; margin: 15px 0; }
+    .total-row { font-weight: bold; font-size: 18px; color: var(--dark); }
+
+    @media (max-width: 768px) {
+        .payment-grid { grid-template-columns: 1fr; }
+        .cart-header, .cart-item { grid-template-columns: 1fr 60px 60px 30px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header based on Pet Avenue.html -->
+  <header>
+    <div class="logo-container">
+      <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Pet Avenue Logo" style="height:48px; width:auto;">
+      <h1>Pet Avenue</h1>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="Pet Avenue Services.html">Services</a>
+      <a href="Pet Avenue Info.html">About Us</a>
+      <a href="#">Message Us</a>
+      <a href="#">John Doe</a>
+      <a href="#" class="logout-btn">Log-out</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    
+    <!-- PANEL 1: APPOINTMENT -->
+    <div id="panel-appointment" class="panel active">
+        <h2>New Appointment</h2>
+        
+        <div class="cart-container">
+            <label for="service-select">Add Services to Cart</label>
+            <select id="service-select" onchange="addServiceToCart()">
+                <option value="" disabled selected>Select a service...</option>
+                <optgroup label="Dog Services">
+                    <option value="450" data-name="Dog Full Grooming">Full Grooming - ₱450.00</option>
+                    <option value="300" data-name="Dog Dematting">Dematting - ₱300.00</option>
+                    <option value="250" data-name="Dog Bath & Blowdry">Bath & Blowdry - ₱250.00</option>
+                    <option value="500" data-name="Dog Special Cut">Special Cut - ₱500.00</option>
+                    <option value="50" data-name="Dog Organic Shampoo">Add-On: Organic Shampoo - ₱50.00</option>
+                    <option value="50" data-name="Dog Conditioner">Add-On: Conditioner - ₱50.00</option>
+                </optgroup>
+                <optgroup label="Cat Services">
+                    <option value="800" data-name="Cat Full Grooming">Full Grooming - ₱800.00</option>
+                    <option value="600" data-name="Cat Dematting">Dematting - ₱600.00</option>
+                </optgroup>
+            </select>
+
+            <div id="cart-display">
+                <!-- Cart Header -->
+                <div class="cart-header">
+                    <div>SERVICE</div>
+                    <div style="text-align:center">QTY</div>
+                    <div style="text-align:center">>10KG</div>
+                    <div></div>
+                </div>
+                <!-- Cart items go here -->
+                <div id="cart-list" style="text-align:center; padding:20px; color:#999; font-style:italic;">No services added yet.</div>
+            </div>
+        </div>
+
+        <div class="calendar-container">
+            <label>Select Date</label>
+            <div class="calendar-grid" id="calendar"></div>
+            
+            <div class="time-selector-container" id="time-selector">
+                <h3>Select Time</h3>
+                <div class="time-scroll-box" id="time-options">
+                    <!-- JS Generated Times -->
+                </div>
+                <p id="selected-time-display" style="margin-top:10px; font-weight:bold; color:var(--main)"></p>
+            </div>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn" onclick="goToPayment()">Next</button>
+        </div>
+    </div>
+
+    <!-- PANEL 2: PAYMENT -->
+    <div id="panel-payment" class="panel">
+        <h2>Payment</h2>
+        
+        <div class="payment-grid">
+            <!-- Left: Methods -->
+            <div>
+                <label>Select Payment Method</label>
+                <div class="method-option" onclick="selectMethod(this, 'GCash')"><span>📱</span> GCash</div>
+                <div class="method-option" onclick="selectMethod(this, 'Bank Transfer')"><span>🏦</span> Bank Transfer</div>
+                <div class="method-option" onclick="selectMethod(this, 'QRPh')"><span>🔳</span> QRPh</div>
+                <div class="method-option" onclick="selectMethod(this, 'Cash')"><span>💵</span> Cash</div>
+            </div>
+
+            <!-- Right: Invoice -->
+            <div>
+                <div class="invoice">
+                    <div class="invoice-head">INVOICE</div>
+                    <div id="invoice-items">
+                        <!-- JS Generated -->
+                    </div>
+                    <div class="invoice-divider"></div>
+                    <div class="invoice-row">
+                        <span>Subtotal</span>
+                        <span id="inv-subtotal">₱0.00</span>
+                    </div>
+                    <!-- 5% Surcharge Line -->
+                    <div class="invoice-row" style="color:var(--dark); font-size:12px;">
+                        <span>Heavy Pet Surcharge (5%)</span>
+                        <span id="inv-surcharge">₱0.00</span>
+                    </div>
+                    <div class="invoice-divider"></div>
+                    <div class="invoice-row total-row">
+                        <span>Total Amount Due</span>
+                        <span id="inv-total">₱0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-back" onclick="switchPanel('panel-appointment')">Back</button>
+            <button class="btn" onclick="confirmAppointment()">Confirm Appointment</button>
+        </div>
+    </div>
+
+  </div>
+
+  <script>
+    let cart = [];
+    let selectedDate = null;
+    let selectedTime = null;
+    let selectedMethod = null;
+
+    // --- SETUP CALENDAR ---
+    function initCalendar() {
+        const cal = document.getElementById('calendar');
+        const today = new Date();
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        
+        // Headers
+        days.forEach(d => {
+            const h = document.createElement('div');
+            h.innerHTML = `<strong>${d}</strong>`;
+            h.style.fontSize = '12px';
+            h.style.color = 'var(--main)';
+            h.style.textAlign = 'center';
+            cal.appendChild(h);
+        });
+
+        // Dates
+        for(let i=0; i<28; i++) {
+            const d = new Date();
+            d.setDate(today.getDate() + i);
+            const dateStr = d.toDateString();
+            
+            const cell = document.createElement('div');
+            cell.className = 'day-cell';
+            cell.innerText = d.getDate();
+            
+            // Example unavailable logic: Sunday is closed
+            if(d.getDay() === 0) {
+                cell.classList.add('disabled');
+            } else {
+                cell.onclick = () => {
+                    document.querySelectorAll('.day-cell').forEach(c => c.classList.remove('selected'));
+                    cell.classList.add('selected');
+                    selectedDate = dateStr;
+                    showTimeSelector();
+                }
+            }
+            cal.appendChild(cell);
+        }
+    }
+
+    function showTimeSelector() {
+        const container = document.getElementById('time-selector');
+        container.style.display = 'block';
+        const list = document.getElementById('time-options');
+        list.innerHTML = '';
+        
+        // Generate Times 9AM - 5PM
+        for(let h=9; h<=17; h++) {
+            const div = document.createElement('div');
+            div.className = 'time-slot';
+            const timeStr = (h > 12 ? h - 12 : h) + ":00 " + (h >= 12 ? "PM" : "AM");
+            div.innerText = timeStr;
+            div.onclick = () => {
+                document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
+                div.classList.add('selected');
+                selectedTime = timeStr;
+                
+                // RETURN UNIX TIMESTAMP
+                // Logic: Combine selectedDate string + timeStr -> Date object -> Unix
+                const dateTime = new Date(`${selectedDate} ${timeStr}`);
+                const unixTimestamp = Math.floor(dateTime.getTime() / 1000);
+                console.log("Selected Unix Timestamp:", unixTimestamp); // Use this for backend!
+                
+                document.getElementById('selected-time-display').innerText = `${selectedDate} @ ${timeStr}`;
+            };
+            list.appendChild(div);
+        }
+    }
+
+    // --- CART LOGIC ---
+    function addServiceToCart() {
+        const select = document.getElementById('service-select');
+        const option = select.options[select.selectedIndex];
+        if(!option.value) return;
+
+        const service = {
+            id: Date.now(),
+            name: option.getAttribute('data-name'),
+            price: parseFloat(option.value),
+            qty: 1,
+            heavy: 0
+        };
+        
+        cart.push(service);
+        select.selectedIndex = 0;
+        renderCart();
+    }
+
+    function renderCart() {
+        const list = document.getElementById('cart-list');
+        if(cart.length === 0) {
+            list.innerHTML = 'No services added yet.';
+            return;
+        }
+        list.innerHTML = '';
+        
+        cart.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'cart-item';
+            div.innerHTML = `
+                <div>
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-price">₱${item.price.toFixed(2)}</div>
+                </div>
+                <input type="number" class="qty-input" value="${item.qty}" min="1" onchange="updateCart(${item.id}, 'qty', this.value)">
+                <input type="number" class="qty-input" value="${item.heavy}" min="0" onchange="updateCart(${item.id}, 'heavy', this.value)">
+                <button class="trash-btn" onclick="removeFromCart(${item.id})">🗑</button>
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    function updateCart(id, field, val) {
+        const item = cart.find(x => x.id === id);
+        if(item) {
+            let num = parseInt(val);
+            if(field === 'qty' && num < 1) num = 1;
+            if(field === 'heavy') {
+                if(num < 0) num = 0;
+                if(num > item.qty) num = item.qty; // Can't have more heavy pets than total pets
+            }
+            item[field] = num;
+            renderCart(); // Re-render to correct invalid inputs visually
+        }
+    }
+
+    function removeFromCart(id) {
+        cart = cart.filter(x => x.id !== id);
+        renderCart();
+    }
+
+    // --- NAVIGATION & PAYMENT ---
+    function switchPanel(panelId) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.getElementById(panelId).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function goToPayment() {
+        if(cart.length === 0) { alert("Please select at least one service."); return; }
+        if(!selectedDate || !selectedTime) { alert("Please select a date and time."); return; }
+        
+        generateInvoice();
+        switchPanel('panel-payment');
+    }
+
+    function generateInvoice() {
+        const container = document.getElementById('invoice-items');
+        let subtotal = 0;
+        let surchargeTotal = 0;
+        let html = '';
+
+        cart.forEach(item => {
+            const baseCost = item.price * item.qty;
+            // 5% surcharge for heavy pets logic
+            // Formula: (Base Price * 0.05) * Number of Heavy Pets
+            const surcharge = (item.price * 0.05) * item.heavy;
+            
+            subtotal += baseCost;
+            surchargeTotal += surcharge;
+
+            html += `
+                <div class="invoice-row">
+                    <span>${item.name} (x${item.qty})</span>
+                    <span>₱${baseCost.toFixed(2)}</span>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+        document.getElementById('inv-subtotal').innerText = "₱" + subtotal.toFixed(2);
+        document.getElementById('inv-surcharge').innerText = "₱" + surchargeTotal.toFixed(2);
+        document.getElementById('inv-total').innerText = "₱" + (subtotal + surchargeTotal).toFixed(2);
+    }
+
+    function selectMethod(el, name) {
+        document.querySelectorAll('.method-option').forEach(m => m.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedMethod = name;
+    }
+
+    function confirmAppointment() {
+        if(!selectedMethod) { alert("Please select a payment method."); return; }
+        alert("Appointment Confirmed via " + selectedMethod + "!");
+        location.reload();
+    }
+
+    // Initialize
+    window.onload = initCalendar;
+  </script>
+</body>
+</html>

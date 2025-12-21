@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Avenue - Sign Up</title>
+  <style>
+    :root {
+      --main: #84BD4E;
+      --dark: #2f3a2e;
+      --light: #f6fbf2;
+      --custom-green: #b3ff51;
+      --custom-yellow: #ffed51;
+      --error-red: #ff4d4d;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--light);
+      color: var(--dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .viewport-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      min-height: 600px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .panel {
+      background: white;
+      width: 100%;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      text-align: center;
+      position: absolute;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .panel.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+      z-index: 10;
+    }
+
+    .logo-img {
+      height: 80px;
+      width: 80px;
+      object-fit: contain;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      background: linear-gradient(135deg, var(--custom-green) 0%, #84BD4E 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 24px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      line-height: 1.2;
+    }
+
+    .consent-box {
+      text-align: justify;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #555;
+      margin-bottom: 25px;
+      padding-right: 5px;
+    }
+
+    .consent-box p {
+      text-indent: 40px; /* One tab space equivalent */
+      margin-bottom: 15px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      text-align: left;
+    }
+
+    .full-width { grid-column: span 2; }
+
+    .form-group { margin-bottom: 12px; position: relative; }
+
+    .label-wrapper {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    label { font-size: 12px; font-weight: bold; }
+
+    .error-text {
+      font-size: 10px;
+      color: var(--error-red);
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #eee;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s;
+      background: white;
+    }
+
+    input:focus, select:focus { border-color: var(--main); }
+
+    .phone-input {
+      display: flex;
+      gap: 5px;
+    }
+
+    .phone-input select { 
+      flex: 0 0 140px; 
+      font-size: 12px;
+      text-overflow: ellipsis;
+    }
+
+    .form-group.error label { color: var(--error-red); }
+    .form-group.error input { 
+      border-color: var(--error-red); 
+      box-shadow: 0 0 8px rgba(255, 77, 77, 0.3); 
+    }
+    .form-group.error .error-text { opacity: 1; }
+
+    .btn-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 25px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary { background: var(--main); color: white; }
+    .btn-secondary { background: white; color: var(--main); border-color: var(--main); }
+
+    .btn:hover {
+      transform: scale(1.02);
+      background-color: var(--custom-yellow);
+      color: var(--dark);
+      border-color: var(--custom-yellow);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--light);
+      border-top: 4px solid var(--main);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <div class="viewport-wrapper">
+    
+    <!-- PANEL 1: Consent -->
+    <div class="panel active" id="panel-consent">
+      <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Logo" class="logo-img">
+      <h2>Account Creation Consent</h2>
+      <div class="consent-box">
+        <p>By creating this account, you consent that Pet Avenue will collect appointment information such as the type of pet you would want groomed and its breed for Pet Avenue to create and manage appointments and gather customer statistics to help us serve you better. You consent that Pet Avenue will collect your name, contact number, email address, and a personal password to create an account with us.</p>
+        <p>We value your privacy. Your data is protected under the <strong>Data Privacy Act of 2012 (Republic Act No. 10173)</strong>. You have the right to be informed, to access, to object, to erasure or blocking, to damages, to file a complaint, to rectify, and to data portability regarding your personal information.</p>
+        <p>Do you agree to these terms?</p>
+      </div>
+      <div class="btn-container">
+        <button class="btn btn-secondary" onclick="window.location.href='index.html'">No</button>
+        <button class="btn btn-primary" onclick="showPanel('panel-form')">Yes, I Agree</button>
+      </div>
+    </div>
+
+    <!-- PANEL 2: Sign Up Form -->
+    <div class="panel" id="panel-form">
+      <h2>Create an Account</h2>
+      <form id="signupForm" class="form-grid">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" name="fname" required>
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" name="lname" required>
+        </div>
+        <div class="form-group">
+          <label>Type of ID</label>
+          <input type="text" name="idType" placeholder="e.g. Passport" required>
+        </div>
+        <div class="form-group">
+          <label>ID Number</label>
+          <input type="text" name="idNumber" required>
+        </div>
+        
+        <div class="form-group full-width">
+          <label>Contact #</label>
+          <div class="phone-input">
+            <select id="country-code" required>
+              <!-- Populated by JavaScript -->
+            </select>
+            <input type="tel" name="phone" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'');" placeholder="Phone number" required>
+          </div>
+        </div>
+
+        <div class="form-group full-width" id="group-email">
+          <div class="label-wrapper">
+            <label>Email address (your account username)</label>
+            <span class="error-text">(invalid)</span>
+          </div>
+          <input type="email" id="email-field" name="email" placeholder="email@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="pass-field" name="password" required>
+        </div>
+        
+        <div class="form-group" id="group-confirm">
+          <div class="label-wrapper">
+            <label>Confirm Password</label>
+            <span class="error-text">(invalid)</span>
+          </div>
+          <input type="password" id="confirm-field" required>
+        </div>
+
+        <div class="full-width">
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Submit</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- PANEL 3: Status -->
+    <div class="panel" id="panel-status">
+      <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Logo" class="logo-img">
+      <h2 id="status-title">Processing...</h2>
+      <div id="status-content">
+        <div class="spinner"></div>
+      </div>
+      <div id="status-actions" style="display: none; margin-top: 20px;">
+        <button class="btn btn-secondary" onclick="showPanel('panel-form')">Try Again</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ITU-T Standard Telephone Codes
+    const countryData = [
+      { n: "Afghanistan", c: "+93" }, { n: "Albania", c: "+355" }, { n: "Algeria", c: "+213" }, { n: "American Samoa", c: "+1-684" },
+      { n: "Andorra", c: "+376" }, { n: "Angola", c: "+244" }, { n: "Anguilla", c: "+1-264" }, { n: "Antarctica", c: "+672" },
+      { n: "Antigua and Barbuda", c: "+1-268" }, { n: "Argentina", c: "+54" }, { n: "Armenia", c: "+374" }, { n: "Aruba", c: "+297" },
+      { n: "Australia", c: "+61" }, { n: "Austria", c: "+43" }, { n: "Azerbaijan", c: "+994" }, { n: "Bahamas", c: "+1-242" },
+      { n: "Bahrain", c: "+973" }, { n: "Bangladesh", c: "+880" }, { n: "Barbados", c: "+1-246" }, { n: "Belarus", c: "+375" },
+      { n: "Belgium", c: "+32" }, { n: "Belize", c: "+501" }, { n: "Benin", c: "+229" }, { n: "Bermuda", c: "+1-441" },
+      { n: "Bhutan", c: "+975" }, { n: "Bolivia", c: "+591" }, { n: "Bosnia and Herzegovina", c: "+387" }, { n: "Botswana", c: "+267" },
+      { n: "Brazil", c: "+55" }, { n: "British Indian Ocean Territory", c: "+246" }, { n: "British Virgin Islands", c: "+1-284" },
+      { n: "Brunei", c: "+673" }, { n: "Bulgaria", c: "+359" }, { n: "Burkina Faso", c: "+226" }, { n: "Burundi", c: "+257" },
+      { n: "Cambodia", c: "+855" }, { n: "Cameroon", c: "+237" }, { n: "Canada", c: "+1" }, { n: "Cape Verde", c: "+238" },
+      { n: "Cayman Islands", c: "+1-345" }, { n: "Central African Republic", c: "+236" }, { n: "Chad", c: "+235" }, { n: "Chile", c: "+56" },
+      { n: "China", c: "+86" }, { n: "Christmas Island", c: "+61" }, { n: "Cocos Islands", c: "+61" }, { n: "Colombia", c: "+57" },
+      { n: "Comoros", c: "+269" }, { n: "Cook Islands", c: "+682" }, { n: "Costa Rica", c: "+506" }, { n: "Croatia", c: "+385" },
+      { n: "Cuba", c: "+53" }, { n: "Curacao", c: "+599" }, { n: "Cyprus", c: "+357" }, { n: "Czech Republic", c: "+420" },
+      { n: "Democratic Republic of the Congo", c: "+243" }, { n: "Denmark", c: "+45" }, { n: "Djibouti", c: "+253" }, { n: "Dominica", c: "+1-767" },
+      { n: "Dominican Republic", c: "+1-809" }, { n: "East Timor", c: "+670" }, { n: "Ecuador", c: "+593" }, { n: "Egypt", c: "+20" },
+      { n: "El Salvador", c: "+503" }, { n: "Equatorial Guinea", c: "+240" }, { n: "Eritrea", c: "+291" }, { n: "Estonia", c: "+372" },
+      { n: "Ethiopia", c: "+251" }, { n: "Falkland Islands", c: "+500" }, { n: "Faroe Islands", c: "+298" }, { n: "Fiji", c: "+679" },
+      { n: "Finland", c: "+358" }, { n: "France", c: "+33" }, { n: "French Polynesia", c: "+689" }, { n: "Gabon", c: "+241" },
+      { n: "Gambia", c: "+220" }, { n: "Georgia", c: "+995" }, { n: "Germany", c: "+49" }, { n: "Ghana", c: "+233" },
+      { n: "Gibraltar", c: "+350" }, { n: "Greece", c: "+30" }, { n: "Greenland", c: "+299" }, { n: "Grenada", c: "+1-473" },
+      { n: "Guam", c: "+1-671" }, { n: "Guatemala", c: "+502" }, { n: "Guernsey", c: "+44-1481" }, { n: "Guinea", c: "+224" },
+      { n: "Guinea-Bissau", c: "+245" }, { n: "Guyana", c: "+592" }, { n: "Haiti", c: "+509" }, { n: "Honduras", c: "+504" },
+      { n: "Hong Kong", c: "+852" }, { n: "Hungary", c: "+36" }, { n: "Iceland", c: "+354" }, { n: "India", c: "+91" },
+      { n: "Indonesia", c: "+62" }, { n: "Iran", c: "+98" }, { n: "Iraq", c: "+964" }, { n: "Ireland", c: "+353" },
+      { n: "Isle of Man", c: "+44-1624" }, { n: "Israel", c: "+972" }, { n: "Italy", c: "+39" }, { n: "Ivory Coast", c: "+225" },
+      { n: "Jamaica", c: "+1-876" }, { n: "Japan", c: "+81" }, { n: "Jersey", c: "+44-1534" }, { n: "Jordan", c: "+962" },
+      { n: "Kazakhstan", c: "+7" }, { n: "Kenya", c: "+254" }, { n: "Kiribati", c: "+686" }, { n: "Kosovo", c: "+383" },
+      { n: "Kuwait", c: "+965" }, { n: "Kyrgyzstan", c: "+996" }, { n: "Laos", c: "+856" }, { n: "Latvia", c: "+371" },
+      { n: "Lebanon", c: "+961" }, { n: "Lesotho", c: "+266" }, { n: "Liberia", c: "+231" }, { n: "Libya", c: "+218" },
+      { n: "Liechtenstein", c: "+423" }, { n: "Lithuania", c: "+370" }, { n: "Luxembourg", c: "+352" }, { n: "Macao", c: "+853" },
+      { n: "Macedonia", c: "+389" }, { n: "Madagascar", c: "+261" }, { n: "Malawi", c: "+265" }, { n: "Malaysia", c: "+60" },
+      { n: "Maldives", c: "+960" }, { n: "Mali", c: "+223" }, { n: "Malta", c: "+356" }, { n: "Marshall Islands", c: "+692" },
+      { n: "Mauritania", c: "+222" }, { n: "Mauritius", c: "+230" }, { n: "Mayotte", c: "+262" }, { n: "Mexico", c: "+52" },
+      { n: "Micronesia", c: "+691" }, { n: "Moldova", c: "+373" }, { n: "Monaco", c: "+377" }, { n: "Mongolia", c: "+976" },
+      { n: "Montenegro", c: "+382" }, { n: "Montserrat", c: "+1-664" }, { n: "Morocco", c: "+212" }, { n: "Mozambique", c: "+258" },
+      { n: "Myanmar", c: "+95" }, { n: "Namibia", c: "+264" }, { n: "Nauru", c: "+674" }, { n: "Nepal", c: "+977" },
+      { n: "Netherlands", c: "+31" }, { n: "Netherlands Antilles", c: "+599" }, { n: "New Caledonia", c: "+687" }, { n: "New Zealand", c: "+64" },
+      { n: "Nicaragua", c: "+505" }, { n: "Niger", c: "+227" }, { n: "Nigeria", c: "+234" }, { n: "Niue", c: "+683" },
+      { n: "North Korea", c: "+850" }, { n: "Northern Mariana Islands", c: "+1-670" }, { n: "Norway", c: "+47" }, { n: "Oman", c: "+968" },
+      { n: "Pakistan", c: "+92" }, { n: "Palau", c: "+680" }, { n: "Palestine", c: "+970" }, { n: "Panama", c: "+507" },
+      { n: "Papua New Guinea", c: "+675" }, { n: "Paraguay", c: "+595" }, { n: "Peru", c: "+51" }, { n: "Philippines", c: "+63" },
+      { n: "Pitcairn", c: "+64" }, { n: "Poland", c: "+48" }, { n: "Portugal", c: "+351" }, { n: "Puerto Rico", c: "+1-787" },
+      { n: "Qatar", c: "+974" }, { n: "Republic of the Congo", c: "+242" }, { n: "Reunion", c: "+262" }, { n: "Romania", c: "+40" },
+      { n: "Russia", c: "+7" }, { n: "Rwanda", c: "+250" }, { n: "Saint Barthelemy", c: "+590" }, { n: "Saint Helena", c: "+290" },
+      { n: "Saint Kitts and Nevis", c: "+1-869" }, { n: "Saint Lucia", c: "+1-758" }, { n: "Saint Martin", c: "+590" }, { n: "Saint Pierre and Miquelon", c: "+508" },
+      { n: "Saint Vincent and the Grenadines", c: "+1-784" }, { n: "Samoa", c: "+685" }, { n: "San Marino", c: "+378" }, { n: "Sao Tome and Principe", c: "+239" },
+      { n: "Saudi Arabia", c: "+966" }, { n: "Senegal", c: "+221" }, { n: "Serbia", c: "+381" }, { n: "Seychelles", c: "+248" },
+      { n: "Sierra Leone", c: "+232" }, { n: "Singapore", c: "+65" }, { n: "Sint Maarten", c: "+1-721" }, { n: "Slovakia", c: "+421" },
+      { n: "Slovenia", c: "+386" }, { n: "Solomon Islands", c: "+677" }, { n: "Somalia", c: "+252" }, { n: "South Africa", c: "+27" },
+      { n: "South Korea", c: "+82" }, { n: "South Sudan", c: "+211" }, { n: "Spain", c: "+34" }, { n: "Sri Lanka", c: "+94" },
+      { n: "Sudan", c: "+249" }, { n: "Suriname", c: "+597" }, { n: "Svalbard and Jan Mayen", c: "+47" }, { n: "Swaziland", c: "+268" },
+      { n: "Sweden", c: "+46" }, { n: "Switzerland", c: "+41" }, { n: "Syria", c: "+963" }, { n: "Taiwan", c: "+886" },
+      { n: "Tajikistan", c: "+992" }, { n: "Tanzania", c: "+255" }, { n: "Thailand", c: "+66" }, { n: "Togo", c: "+228" },
+      { n: "Tokelau", c: "+690" }, { n: "Tonga", c: "+676" }, { n: "Trinidad and Barbuda", c: "+1-868" }, { n: "Tunisia", c: "+216" },
+      { n: "Turkey", c: "+90" }, { n: "Turkmenistan", c: "+993" }, { n: "Turks and Caicos Islands", c: "+1-649" }, { n: "Tuvalu", c: "+688" },
+      { n: "U.S. Virgin Islands", c: "+1-340" }, { n: "Uganda", c: "+256" }, { n: "Ukraine", c: "+380" }, { n: "United Arab Emirates", c: "+971" },
+      { n: "United Kingdom", c: "+44" }, { n: "United States", c: "+1" }, { n: "Uruguay", c: "+598" }, { n: "Uzbekistan", c: "+998" },
+      { n: "Vanuatu", c: "+678" }, { n: "Vatican", c: "+379" }, { n: "Venezuela", c: "+58" }, { n: "Vietnam", c: "+84" },
+      { n: "Wallis and Futuna", c: "+681" }, { n: "Western Sahara", c: "+212" }, { n: "Yemen", c: "+967" }, { n: "Zambia", c: "+260" },
+      { n: "Zimbabwe", c: "+263" }
+    ];
+
+    const passField = document.getElementById('pass-field');
+    const confirmField = document.getElementById('confirm-field');
+    const groupConfirm = document.getElementById('group-confirm');
+    const emailField = document.getElementById('email-field');
+    const groupEmail = document.getElementById('group-email');
+
+    function populateCountryCodes() {
+      const select = document.getElementById('country-code');
+      countryData.sort((a, b) => a.n.localeCompare(b.n));
+      countryData.forEach(country => {
+        const option = document.createElement('option');
+        option.value = country.c;
+        option.textContent = `${country.n} (${country.c})`;
+        if (country.n === "Philippines") option.selected = true;
+        select.appendChild(option);
+      });
+    }
+
+    function showPanel(panelId) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(panelId).classList.add('active');
+    }
+
+    function validatePasswords() {
+      const p1 = passField.value;
+      const p2 = confirmField.value;
+      
+      if (p2.length > 0 && p1 !== p2) {
+        groupConfirm.classList.add('error');
+      } else {
+        groupConfirm.classList.remove('error');
+      }
+    }
+
+    // Real-time password validation
+    passField.addEventListener('input', validatePasswords);
+    confirmField.addEventListener('input', validatePasswords);
+
+    // Real-time email validation
+    emailField.addEventListener('input', () => {
+      if (emailField.value && !emailField.value.includes('@')) {
+        groupEmail.classList.add('error');
+      } else {
+        groupEmail.classList.remove('error');
+      }
+    });
+
+    const signupForm = document.getElementById('signupForm');
+    signupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const emailVal = emailField.value;
+      const p1 = passField.value;
+      const p2 = confirmField.value;
+
+      let hasError = false;
+
+      // Final check: Email validation
+      if(!emailVal || !emailVal.includes('@')) {
+        groupEmail.classList.add('error');
+        emailField.focus();
+        hasError = true;
+      }
+
+      // Final check: Password match
+      if(p1 !== p2) {
+        groupConfirm.classList.add('error');
+        if (!hasError) confirmField.focus();
+        hasError = true;
+      }
+
+      if (hasError)
+        return;
+
+      // Start processing UI
+      document.getElementById('status-title').innerText = "Creating Account...";
+      document.getElementById('status-content').innerHTML = '<div class="spinner"></div>';
+      document.getElementById('status-actions').style.display = "none";
+      showPanel('panel-status');
+
+      setTimeout(() => {
+        const rand = Math.random();
+        if (rand > 0.5) {
+          document.getElementById('status-title').innerText = "Account Created!";
+          document.getElementById('status-content').innerHTML = "<p>Welcome to the family! You are being redirected...</p>";
+          setTimeout(() => window.location.href = "#", 2000);
+        } else {
+          document.getElementById('status-title').innerText = "Registration Failed";
+          document.getElementById('status-content').innerHTML = 
+            "<p style='color:var(--error-red); font-weight:bold;'>Account already exists.<br/>Try using another email address.</p>";
+          document.getElementById('status-actions').style.display = "block";
+        }
+      }, 1500);
+    });
+
+    window.onload = populateCountryCodes;
+  </script>
+
+</body>
+</html>

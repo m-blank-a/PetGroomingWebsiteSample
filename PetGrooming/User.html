@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet Avenue - My Appointments</title>
+    <link rel="icon" type="image/x-icon" href="SiteIcon.ico"/>
     <style>
         :root {
             --main: #84BD4E;
@@ -13,13 +14,20 @@
             --custom-yellow: #ffed51;
             --white: #ffffff;
             --gray: #f9f9f9;
-            /* Status Colors */
-            --status-pending-bg: #fff9db;
-            --status-pending-text: #856404;
-            --status-progress-bg: #e6ffed;
-            --status-progress-text: #22863a;
-            --status-done-bg: #22863a;
+            
+            /* UPDATED Status Colors based on requested theme elements */
+            /* Pending: Based on the yellow button hover color */
+            --status-pending-bg: var(--custom-yellow);
+            --status-pending-text: #665a00;
+            
+            /* In Progress: Based on the hero card gradient/custom green */
+            --status-progress-bg: var(--custom-green);
+            --status-progress-text: #2f3a2e;
+            
+            /* Done: Based on the header background color */
+            --status-done-bg: var(--main);
             --status-done-text: #ffffff;
+
             /* Scrollbar Specific Colors */
             --sb-track: rgba(132, 189, 78, 0.1); 
             --sb-thumb: rgba(132, 189, 78, 0.6); 
@@ -30,7 +38,7 @@
             font-family: Arial, Helvetica, sans-serif;
         }
 
-        /* Custom Scrollbar Styles (From Pet Avenue.html) */
+        /* Custom Scrollbar Styles */
         ::-webkit-scrollbar {
             width: 10px;
         }
@@ -62,7 +70,7 @@
             color: var(--dark);
         }
 
-        /* HEADER (Exact replica from Pet Avenue.html) */
+        /* HEADER */
         header {
             background-color: var(--main);
             padding: 15px 40px;
@@ -123,8 +131,7 @@
             font-size: 28px;
             margin-bottom: 25px;
             color: var(--dark);
-            border-left: 5px solid var(--main);
-            padding-left: 15px;
+            padding-left: 0;
         }
 
         /* TABLE STYLING */
@@ -154,6 +161,10 @@
             letter-spacing: 1px;
         }
 
+        th.status-col, td.status-col {
+            text-align: center;
+        }
+
         td {
             padding: 15px 18px;
             border-bottom: 1px solid #eee;
@@ -165,19 +176,22 @@
             border-bottom: none;
         }
 
-        tr:hover {
+        /* UPDATED: Only target tbody rows for hover effect */
+        tbody tr:hover {
             background-color: var(--gray);
         }
 
-        /* JIRA-STYLE LABELS */
+        /* STATUS LABELS */
         .status-pill {
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 4px;
+            padding: 6px 14px;
+            border-radius: 6px;
             font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            min-width: 110px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .status-0 { background-color: var(--status-pending-bg); color: var(--status-pending-text); }
@@ -211,7 +225,6 @@
             box-shadow: 0 6px 15px rgba(0,0,0,0.2);
         }
 
-        /* Empty State */
         .empty-row td {
             text-align: center;
             padding: 40px;
@@ -231,16 +244,17 @@
 
     <header>
         <div class="logo-container">
-            <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Logo" style="height:48px;">
+            <img src="SiteIcon.webp" alt="Logo" style="height:48px;">
             <h1>Pet Avenue</h1>
         </div>
         <nav>
-            <a href="index.html">Home</a>
-            <a href="Pet Avenue Services.html">Services</a>
-            <a href="Pet Avenue Info.html">About Us</a>
-            <a href="#">Message Us</a>
-            <a href="#">John Doe</a>
+            <a href="Home.html">Home</a>
+            <a href="Services.html">Services</a>
+            <a href="AboutUs.html">About Us</a>
+            <a href="https://mail.google.com/mail/?view=cm&to=insideinsidecloud@gmail.com&su=Pet%20Avenue%20Customer%20Support&body=Write%20your%20concern%20here" target="_blank">Message Us</a>
+            <a href="#" id="Username">John Doe</a>
             <a href="#" class="logout-btn">Log-out</a>
+            <a href="Login.html" id="SignIn">Sign In</a>
         </nav>
     </header>
 
@@ -253,7 +267,7 @@
                     <tr>
                         <th>Order #</th>
                         <th>Appointment Schedule</th>
-                        <th>Status</th>
+                        <th class="status-col">Status</th>
                     </tr>
                 </thead>
                 <tbody id="appointment-table-body">
@@ -265,11 +279,12 @@
         </div>
 
         <div class="action-container">
-            <button class="btn-book" onclick="alert('Redirecting to booking system...')">Book a new Appointment</button>
+            <button class="btn-book" onclick="window.location.assign('Booking.html')">Book a new Appointment</button>
         </div>
     </main>
 
-    <script>
+    <script type="module">
+        import {DemoAccount} from "./Account.js";
         const tableBody = document.getElementById('appointment-table-body');
         const noDataRow = document.getElementById('no-data');
 
@@ -294,7 +309,7 @@
             row.innerHTML = `
                 <td>#${formattedOrder}</td>
                 <td>${formattedDate}</td>
-                <td><span class="status-pill status-${statusCode}">${statusText}</span></td>
+                <td class="status-col"><span class="status-pill status-${statusCode}">${statusText}</span></td>
             `;
 
             tableBody.prepend(row);
@@ -303,7 +318,7 @@
         function CreateRandomAppointment() {
             const randomOrder = Math.floor(Math.random() * 999999) + 1;
             const randomTime = Date.now() + (Math.random() * 172800000);
-            const randomStatus = Math.floor(Math.random() * 2);
+            const randomStatus = Math.floor(Math.random() * 3);
 
             CreateAppointment(randomOrder, randomTime, randomStatus);
         }
@@ -312,6 +327,20 @@
             CreateAppointment(12345, Date.now() - 86400000, 2);
             setInterval(CreateRandomAppointment, 4000);
         };
+
+        let account = new DemoAccount();
+        if (account.UserLoggedIn == "true") {
+            const username = document.getElementById("Username");
+            username.innerHTML = localStorage.getItem("Email").split("@")[0];
+            const logoutButton = document.getElementsByClassName("logout-btn")[0];
+        logoutButton.addEventListener("click", (e) => {
+            account.LogOut();
+            window.reload();
+        });
+            const signIn = document.getElementById("SignIn");
+            signIn.remove();
+        } else
+            window.location.replace("Login.html");
     </script>
-</body> 
+</body>
 </html>

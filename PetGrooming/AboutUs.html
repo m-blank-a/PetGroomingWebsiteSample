@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pet Avenue - Meet the Team</title>
+  <link rel="icon" type="image/x-icon" href="SiteIcon.ico"/>
   <style>
     :root {
       --main: #84BD4E;
@@ -20,16 +21,31 @@
       font-family: Arial, Helvetica, sans-serif;
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 10px; }
-    ::-webkit-scrollbar-track { background: var(--sb-track); }
+    /* Custom Scrollbar Styles */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--sb-track);
+    }
+
     ::-webkit-scrollbar-thumb {
       background: var(--sb-thumb);
       border-radius: 10px;
       border: 2px solid transparent;
       background-clip: content-box;
     }
-    ::-webkit-scrollbar-thumb:hover { background-color: var(--main); }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: var(--main);
+    }
+
+    /* Firefox Support */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--sb-thumb) var(--sb-track);
+    }
 
     body {
       margin: 0;
@@ -274,16 +290,17 @@
 
   <header>
     <div class="logo-container">
-      <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Logo" style="height:48px;">
+      <img src="SiteIcon.webp" alt="Logo" style="height:48px;">
       <h1>Pet Avenue</h1>
     </div>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="Pet Avenue Services.html">Services</a>
+      <a href="Home.html">Home</a>
+      <a href="Services.html">Services</a>
       <a href="#">About Us</a>
-      <a href="#">Message Us</a>
-      <a href="#">username</a>
+      <a href="https://mail.google.com/mail/?view=cm&to=insideinsidecloud@gmail.com&su=Pet%20Avenue%20Customer%20Support&body=Write%20your%20concern%20here" target="_blank">Message Us</a>
+      <a href="User.html" id="Username">username</a>
       <a href="#" class="logout-btn">Log-out</a>
+      <a href="Login.html" id="SignIn">Sign In</a>
     </nav>
   </header>
 
@@ -365,7 +382,8 @@
     </footer>
   </div>
 
-  <script>
+  <script type="module">
+    import {DemoAccount} from "./Account.js";
     // Shrinking scroll
     window.addEventListener('scroll', () => {
       const hero = document.getElementById('infoHero');
@@ -373,6 +391,25 @@
       else hero.classList.remove('shrunk');
     });
 
+    // Account Logic
+    let account = new DemoAccount();
+    if (account.UserLoggedIn == "true") {
+      const username = document.getElementById("Username");
+      username.innerHTML = localStorage.getItem("Email").split("@")[0];
+      const logoutButton = document.getElementsByClassName("logout-btn")[0];
+      logoutButton.addEventListener("click", (e) => {
+        account.LogOut();
+      });
+      const signIn = document.getElementById("SignIn");
+      signIn.remove();
+    } else {
+      const username = document.getElementById("Username");
+      const logoutButton = document.getElementsByClassName("logout-btn")[0];
+      username.remove();
+      logoutButton.remove();
+    }
+    </script>
+    <script>
     // Carousel Logic
     let currentRotation = 0;
     const cards = document.querySelectorAll('.team-card');

@@ -1,7 +1,12 @@
 "use strict";
 
+const MAXRETRIES = 3;
+
+// This class is responsible for creating requests to the server
+// sent in JSON texts.
 class RemoteObject {
-    data = {};
+    #data = {}; // Container for stored data
+
     Request(link, obj) {
         if (typeof link !== "string")
             return; // link must be a string
@@ -9,9 +14,10 @@ class RemoteObject {
             return; // Ignore null
         if (typeof obj !== "object" || obj.constructor !== Object)
             return; // Only accept plain JS objects, not from classes.
-        if (Object.keys(obj).length == 0)
+        if (Object.keys(obj).length == 0 || Object.keys(obj).length > 0)
             return; // Ignore blank requests
 
+        this.#data = obj;
         let url = new URL(link);
         let requestToSend = {
             method: "POST",
@@ -23,9 +29,18 @@ class RemoteObject {
         }
         
         let isRequestSuccess = false;
+        let retries = 0;
         do {
-            let promise = fetch(url, requestToSend);
-            
-        } while (!isRequestSuccess);
+            try {
+                let promise = fetch(url, requestToSend);
+            } catch (e) {
+                isRequestSuccess = false;
+                retries++;
+            }
+            isRequestSuccess = true;
+            this.#data = null;
+        } while (!isRequestSuccess || retries <= MAXRETRIES);
     }
-} 
+}
+
+export default RemoteObject;

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pet Avenue</title>
+  <link rel="icon" type="image/x-icon" href="SiteIcon.ico"/>
   <style>
     :root {
       --main: #84BD4E;
@@ -211,24 +212,11 @@
       gap: 30px;
     }
 
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-      transition: transform 0.3s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-10px);
-    }
-
-    .card img {
+    .products iframe {
+      position: relative;
       width: 100%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 8px;
+      height: 50vh;
+      border: none;
     }
 
     footer {
@@ -243,52 +231,34 @@
 
   <header>
     <div class="logo-container">
-      <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Logo" style="height:48px;">
+      <img src="SiteIcon.webp" alt="Logo" style="height:48px;">
       <h1>Pet Avenue</h1>
     </div>
     <nav>
       <a href="#">Home</a>
-      <a href="Pet Avenue Services.html">Services</a>
-      <a href="#">About Us</a>
-      <a href="#">Message Us</a>
-      <a href="#">username</a>
+      <a href="Services.html">Services</a>
+      <a href="AboutUs.html">About Us</a>
+      <a href="https://mail.google.com/mail/?view=cm&to=insideinsidecloud@gmail.com&su=Pet%20Avenue%20Customer%20Support&body=Write%20your%20concern%20here" target="_blank">Message Us</a>
+      <a href="User.html" id="Username">username</a>
       <a href="#" class="logout-btn">Log-out</a>
+      <a href="Login.html" id="SignIn">Sign In</a>
     </nav>
   </header>
 
   <div class="hero-container">
     <section class="hero" id="homeHero">
       <h2>Your Pet's <span class="highlight-yellow">Happy</span> Place</h2>
-      <p>Quality food, toys, and accessories for dogs, cats, and more.</p>
-      <a href="#" class="btn" id="shopBtn">Shop Now</a>
+      <p>Quality dog and cat grooming services for everyone!</p>
+      <a href="Booking.html" class="btn" id="shopBtn">Book Now</a>
       <div class="scroll-indicator">↓ Scroll to Explore More ↓</div>
     </section>
   </div>
 
   <div class="content-area">
     <section class="section">
-      <h3 style="text-align:center; font-size: 32px; margin-bottom: 50px;">Popular Products</h3>
+      <h3 style="text-align:center; font-size: 32px; margin-bottom: 50px;">Popular Affiliate Products</h3>
       <div class="products">
-        <div class="card">
-          <img src="https://placehold.co/300x200?text=Dog+Food" alt="Dog Food">
-          <h4>Premium Dog Food</h4>
-          <p>$25.00</p>
-        </div>
-        <div class="card">
-          <img src="https://placehold.co/300x200?text=Cat+Toy" alt="Cat Toy">
-          <h4>Cat Teaser Toy</h4>
-          <p>$12.00</p>
-        </div>
-        <div class="card">
-          <img src="https://placehold.co/300x200?text=Pet+Bed" alt="Pet Bed">
-          <h4>Soft Pet Bed</h4>
-          <p>$40.00</p>
-        </div>
-        <div class="card">
-          <img src="https://placehold.co/300x200?text=Pet+Bowl" alt="Pet Bowl">
-          <h4>Stainless Bowl</h4>
-          <p>$10.00</p>
-        </div>
+        <iframe src="AmazonAffiliateProducts.html"></iframe>
       </div>
     </section>
 
@@ -297,7 +267,8 @@
     </footer>
   </div>
 
-  <script>
+  <script type="module">
+    import {DemoAccount} from "./Account.js";
     window.addEventListener('scroll', () => {
       const hero = document.getElementById('homeHero');
       const scrollY = window.scrollY;
@@ -308,6 +279,25 @@
         hero.classList.remove('shrunk');
       }
     });
+
+    let account = new DemoAccount();
+    if (account.UserLoggedIn == "true") {
+      console.log(account.UserLoggedIn);
+      const username = document.getElementById("Username");
+      username.innerHTML = localStorage.getItem("Email").split("@")[0];
+      const logoutButton = document.getElementsByClassName("logout-btn")[0];
+      logoutButton.addEventListener("click", (e) => {
+        account.LogOut();
+        window.reload();
+      });
+      const signIn = document.getElementById("SignIn");
+      signIn.remove();
+    } else {
+      const username = document.getElementById("Username");
+      const logoutButton = document.getElementsByClassName("logout-btn")[0];
+      username.remove();
+      logoutButton.remove();
+    }
   </script>
 </body>
 </html>

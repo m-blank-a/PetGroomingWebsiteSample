@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pet Avenue - Services</title>
+  <link rel="icon" type="image/x-icon" href="SiteIcon.ico"/>
   <style>
     :root {
       --main: #84BD4E;
@@ -293,16 +294,17 @@
 
   <header id="mainHeader">
     <div class="logo-container">
-      <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Pet Avenue Logo" style="height:48px; width:auto;">
+      <img src="SiteIcon.webp" alt="Pet Avenue Logo" style="height:48px; width:auto;">
       <h1>Pet Avenue</h1>
     </div>
     <nav>
-      <a href="index.html">Home</a>
+      <a href="Home.html">Home</a>
       <a href="#">Services</a>
-      <a href="#">About Us</a>
-      <a href="#">Message Us</a>
-      <a href="#">username</a>
+      <a href="AboutUs.html">About Us</a>
+      <a href="https://mail.google.com/mail/?view=cm&to=insideinsidecloud@gmail.com&su=Pet%20Avenue%20Customer%20Support&body=Write%20your%20concern%20here" target="_blank">Message Us</a>
+      <a href="User.html" id="Username">username</a>
       <a href="#" class="logout-btn">Log-out</a>
+      <a href="Login.html" id="SignIn">Sign In</a>
     </nav>
   </header>
 
@@ -384,7 +386,7 @@
   </section>
 
   <section class="booking-cta">
-    <a href="#" class="btn-booking">
+    <a href="Booking.html" class="btn-booking">
       <span class="highlight-yellow">Book</span> an Appointment <span class="highlight-yellow">NOW!</span>
     </a>
   </section>
@@ -393,7 +395,8 @@
     <p>© 2025 Pet Avenue. All rights reserved.</p>
   </footer>
 
-  <script>
+  <script type="module">
+    import {DemoAccount} from "./Account.js";
     // Handle the scroll transformation
     window.addEventListener('scroll', () => {
       const hero = document.getElementById('serviceHero');
@@ -405,6 +408,20 @@
         hero.classList.remove('shrunk');
       }
     });
+
+    let account = new DemoAccount();
+    if (account.UserLoggedIn == "true") {
+      console.log(account.UserLoggedIn);
+      const username = document.getElementById("Username");
+      username.innerHTML = localStorage.getItem("Email").split("@")[0];
+      const signIn = document.getElementById("SignIn");
+      signIn.remove();
+    } else {
+      const username = document.getElementById("Username");
+      const logoutButton = document.getElementsByClassName("logout-btn")[0];
+      username.remove();
+      logoutButton.remove();
+    }
   </script>
 </body>  
 </html>

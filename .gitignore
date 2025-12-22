@@ -1,1 +1,6 @@
 _old/
+
+# Never gonna touch PHP again :>
+*.php
+
+PetGrooming/res

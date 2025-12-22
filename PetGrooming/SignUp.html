@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pet Avenue - Sign Up</title>
+  <link rel="icon" type="image/x-icon" href="SiteIcon.ico"/>
   <style>
     :root {
       --main: #84BD4E;
@@ -12,11 +13,40 @@
       --custom-green: #b3ff51;
       --custom-yellow: #ffed51;
       --error-red: #ff4d4d;
+      /* Scrollbar Specific Colors */
+      --sb-track: rgba(132, 189, 78, 0.1); 
+      --sb-thumb: rgba(132, 189, 78, 0.6); 
     }
 
     * {
       box-sizing: border-box;
       font-family: Arial, Helvetica, sans-serif;
+    }
+
+  /* Custom Scrollbar Styles */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--sb-track);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--sb-thumb);
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: var(--main);
+    }
+
+    /* Firefox Support */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--sb-thumb) var(--sb-track);
     }
 
     body {
@@ -201,7 +231,7 @@
     
     <!-- PANEL 1: Consent -->
     <div class="panel active" id="panel-consent">
-      <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Logo" class="logo-img">
+      <img src="SiteIcon.webp" alt="Logo" class="logo-img">
       <h2>Account Creation Consent</h2>
       <div class="consent-box">
         <p>By creating this account, you consent that Pet Avenue will collect appointment information such as the type of pet you would want groomed and its breed for Pet Avenue to create and manage appointments and gather customer statistics to help us serve you better. You consent that Pet Avenue will collect your name, contact number, email address, and a personal password to create an account with us.</p>
@@ -209,7 +239,7 @@
         <p>Do you agree to these terms?</p>
       </div>
       <div class="btn-container">
-        <button class="btn btn-secondary" onclick="window.location.href='index.html'">No</button>
+        <button class="btn btn-secondary" onclick="window.history.go(-2)">No</button>
         <button class="btn btn-primary" onclick="showPanel('panel-form')">Yes, I Agree</button>
       </div>
     </div>
@@ -274,7 +304,7 @@
 
     <!-- PANEL 3: Status -->
     <div class="panel" id="panel-status">
-      <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Logo" class="logo-img">
+      <img src="SiteIcon.webp" alt="Logo" class="logo-img">
       <h2 id="status-title">Processing...</h2>
       <div id="status-content">
         <div class="spinner"></div>
@@ -285,8 +315,17 @@
     </div>
 
   </div>
-
   <script>
+    function showPanel(panelId) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(panelId).classList.add('active');
+    }
+  </script>
+  <script type="module">
+    import {DemoAccount} from "./Account.js";
+    
+    let account = new DemoAccount();
+
     // ITU-T Standard Telephone Codes
     const countryData = [
       { n: "Afghanistan", c: "+93" }, { n: "Albania", c: "+355" }, { n: "Algeria", c: "+213" }, { n: "American Samoa", c: "+1-684" },
@@ -370,20 +409,14 @@
       });
     }
 
-    function showPanel(panelId) {
-      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-      document.getElementById(panelId).classList.add('active');
-    }
-
     function validatePasswords() {
       const p1 = passField.value;
       const p2 = confirmField.value;
       
-      if (p2.length > 0 && p1 !== p2) {
+      if (p2.length > 0 && p1 !== p2)
         groupConfirm.classList.add('error');
-      } else {
+      else
         groupConfirm.classList.remove('error');
-      }
     }
 
     // Real-time password validation
@@ -433,10 +466,11 @@
 
       setTimeout(() => {
         const rand = Math.random();
-        if (rand > 0.5) {
+        if (!account.EmailMatch(emailField.value)) {
+          account.SignUp(emailField.value, passField.value);
           document.getElementById('status-title').innerText = "Account Created!";
           document.getElementById('status-content').innerHTML = "<p>Welcome to the family! You are being redirected...</p>";
-          setTimeout(() => window.location.href = "#", 2000);
+          setTimeout(() => window.history.go(-2), 2000);
         } else {
           document.getElementById('status-title').innerText = "Registration Failed";
           document.getElementById('status-content').innerHTML = 

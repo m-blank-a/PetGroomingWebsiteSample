@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Product Recommendations</title>
+    <style>
+        :root {
+            --amazon-orange: #FF9900;
+            --amazon-yellow: #FFD814;
+            --amazon-yellow-hover: #F7CA00;
+            --text-dark: #0F1111;
+            --text-light: #565959;
+            --border-color: #DDD;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            background-color: #ffffff;
+            font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .product-card {
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            box-sizing: border-box;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .badge {
+            background-color: #e67e22;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 2px;
+            align-self: flex-start;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-content {
+            display: flex;
+            gap: 20px;
+        }
+
+        .image-container {
+            flex: 0 0 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .details-container {
+            flex: 1;
+        }
+
+        .brand {
+            font-size: 13px;
+            color: #007185;
+            text-decoration: none;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .brand:hover {
+            text-decoration: underline;
+            color: #C7511F;
+        }
+
+        .title {
+            font-size: 17px;
+            line-height: 1.3;
+            color: var(--text-dark);
+            margin: 0 0 8px 0;
+            font-weight: 600;
+            text-decoration: none;
+            display: block;
+        }
+
+        .title:hover {
+            color: #C7511F;
+        }
+
+        .rating {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stars {
+            color: #FFA41C;
+            letter-spacing: -1px;
+            font-size: 18px;
+        }
+
+        .review-count {
+            color: #007185;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .description {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .cta-button {
+            background-color: var(--amazon-yellow);
+            border: 1px solid #FCD200;
+            border-radius: 20px;
+            color: var(--text-dark);
+            cursor: pointer;
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 12px 0;
+            text-align: center;
+            text-decoration: none;
+            width: 100%;
+            transition: background-color 0.1s;
+            margin-top: auto;
+        }
+
+        .cta-button:hover {
+            background-color: var(--amazon-yellow-hover);
+            border-color: #F2C200;
+        }
+
+        @media (max-width: 480px) {
+            .product-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .rating {
+                justify-content: center;
+            }
+            .image-container {
+                flex: 0 0 auto;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Amazon's Choice Dog Product (Verified for PH Shipping) -->
+    <div class="product-card">
+        <div class="badge">Amazon's Choice</div>
+        <div class="product-content">
+            <div class="image-container">
+                <img src="https://m.media-amazon.com/images/I/71Y9tVvI7DL._AC_SL1500_.jpg" alt="Chuckit! Ultra Ball" onerror="this.src='https://via.placeholder.com/140x180?text=Chuckit!+Balls'">
+            </div>
+            <div class="details-container">
+                <a href="https://www.amazon.com/Chuckit-Ultra-Ball-Medium-Pack/dp/B00027463I" target="_blank" class="brand">Visit the Chuckit! Store</a>
+                <a href="https://www.amazon.com/Chuckit-Ultra-Ball-Medium-Pack/dp/B00027463I" target="_blank" class="title">Chuckit! Ultra Ball, Durable Rubber Dog Ball, Launcher Compatible, 2-Pack (Medium)</a>
+                <div class="rating">
+                    <span class="stars">★★★★★</span>
+                    <span class="review-count">125,000+ Ratings</span>
+                </div>
+                <p class="description">High-bounce rubber ball that's durable, buoyant, and easy to clean. A global favorite for fetch that ships to PH.</p>
+            </div>
+        </div>
+        <a href="https://www.amazon.com/Chuckit-Ultra-Ball-Medium-Pack/dp/B00027463I" target="_blank" class="cta-button">View on Amazon</a>
+    </div>
+
+    <!-- Cat Food Embed -->
+    <div class="product-card">
+        <div class="badge" style="background-color: #232F3E;">Best Seller</div>
+        <div class="product-content">
+            <div class="image-container">
+                <img src="https://m.media-amazon.com/images/I/71P4xS7S6HL._AC_SL1500_.jpg" alt="Blue Buffalo Tastefuls" onerror="this.src='https://via.placeholder.com/140x180?text=Blue+Buffalo'">
+            </div>
+            <div class="details-container">
+                <a href="https://www.amazon.com/Blue-Buffalo-Tastefuls-Natural-Chicken/dp/B00X04EBJY" target="_blank" class="brand">Visit the Blue Buffalo Store</a>
+                <a href="https://www.amazon.com/Blue-Buffalo-Tastefuls-Natural-Chicken/dp/B00X04EBJY" target="_blank" class="title">Blue Buffalo Tastefuls Natural Adult Pate Wet Cat Food (Chicken)</a>
+                <div class="rating">
+                    <span class="stars">★★★★★</span>
+                    <span class="review-count">12,000+ Ratings</span>
+                </div>
+                <p class="description">Features real chicken as the first ingredient. Smooth pate texture that cats love, without artificial flavors.</p>
+            </div>
+        </div>
+        <a href="https://www.amazon.com/Blue-Buffalo-Tastefuls-Natural-Chicken/dp/B00X04EBJY" target="_blank" class="cta-button">View Deal on Amazon</a>
+    </div>
+
+</body>
+</html>

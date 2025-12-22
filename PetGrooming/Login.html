@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pet Avenue - Login</title>
+  <link rel="icon" type="image/x-icon" href="SiteIcon.ico"/>
   <style>
     :root {
       --main: #84BD4E;
@@ -236,7 +237,7 @@
   <div class="viewport-wrapper">
     <!-- Login Panel -->
     <div class="login-container" id="loginPanel">
-      <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Pet Avenue Logo" class="logo-img">
+      <img src="SiteIcon.webp" alt="Pet Avenue Logo" class="logo-img">
       
       <h2>Log In to<br/>Pet Avenue</h2>
 
@@ -258,7 +259,7 @@
         </div>
 
         <button type="submit" class="btn btn-login">Log In</button>
-        <button type="button" class="btn btn-signup">Sign Up for an Account</button>
+        <button type="button" class="btn btn-signup" onclick="window.location.assign('SignUp.html')">Sign Up for an Account</button>
       </form>
 
       <a href="index.html" class="back-home">Back to Home</a>
@@ -266,18 +267,23 @@
 
     <!-- Loading/Success Panel -->
     <div class="status-container" id="statusPanel">
-      <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Pet Avenue Logo" class="logo-img">
+      <img src="SiteIcon.webp" alt="Pet Avenue Logo" class="logo-img">
       <h2 id="statusHeading">Logging In...</h2>
       <div id="statusIndicator" class="spinner"></div>
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    import {DemoAccount} from "./Account.js";
     const loginForm = document.getElementById('loginForm');
     const loginPanel = document.getElementById('loginPanel');
     const statusPanel = document.getElementById('statusPanel');
     const statusHeading = document.getElementById('statusHeading');
     const statusIndicator = document.getElementById('statusIndicator');
+
+    let account = new DemoAccount();
+    const usernameField = document.getElementById("username");
+    const passwordField = document.getElementById("password");
 
     function showError(fieldId) {
       const group = document.getElementById(`group-${fieldId}`);
@@ -292,6 +298,9 @@
       statusIndicator.className = "success-check";
       statusIndicator.innerHTML = "✓";
       statusPanel.classList.add('visible');
+      setTimeout(() => {
+        window.history.go(-2);
+      }, 500);
     }
 
     loginForm.addEventListener('submit', (e) => {
@@ -305,12 +314,15 @@
 
       setTimeout(() => {
         const chance = Math.random();
-        if (chance > 0.6) {
+        if (account.PasswordValid(usernameField.value, passwordField.value)) {
           showSuccess();
         } else {
           statusPanel.classList.remove('visible');
           loginPanel.classList.remove('hidden');
-          if (chance > 0.3) { showError('username'); } else { showError('password'); }
+          if (account.EmailMatch(usernameField.value))
+            showError('username');
+          else
+            showError('password');
         }
       }, 1500);
     });

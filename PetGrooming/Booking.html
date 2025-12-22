@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pet Avenue - Book Appointment</title>
+  <link rel="icon" type="image/x-icon" href="SiteIcon.ico"/>
   <style>
     :root {
       --main: #84BD4E;
@@ -205,16 +206,17 @@
   <!-- Header based on Pet Avenue.html -->
   <header>
     <div class="logo-container">
-      <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Pet Avenue Logo" style="height:48px; width:auto;">
+      <img src="SiteIcon.webp" alt="Pet Avenue Logo" style="height:48px; width:auto;">
       <h1>Pet Avenue</h1>
     </div>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="Pet Avenue Services.html">Services</a>
-      <a href="Pet Avenue Info.html">About Us</a>
-      <a href="#">Message Us</a>
-      <a href="#">John Doe</a>
+      <a href="Home.html">Home</a>
+      <a href="Services.html">Services</a>
+      <a href="AboutUs.html">About Us</a>
+      <a href="https://mail.google.com/mail/?view=cm&to=insideinsidecloud@gmail.com&su=Pet%20Avenue%20Customer%20Support&body=Write%20your%20concern%20here" target="_blank">Message Us</a>
+      <a href="User.html" id="Username">John Doe</a>
       <a href="#" class="logout-btn">Log-out</a>
+      <a href="Login.html" id="SignIn">Sign In</a>
     </nav>
   </header>
 
@@ -229,16 +231,16 @@
             <select id="service-select" onchange="addServiceToCart()">
                 <option value="" disabled selected>Select a service...</option>
                 <optgroup label="Dog Services">
-                    <option value="450" data-name="Dog Full Grooming">Full Grooming - ₱450.00</option>
-                    <option value="300" data-name="Dog Dematting">Dematting - ₱300.00</option>
-                    <option value="250" data-name="Dog Bath & Blowdry">Bath & Blowdry - ₱250.00</option>
-                    <option value="500" data-name="Dog Special Cut">Special Cut - ₱500.00</option>
-                    <option value="50" data-name="Dog Organic Shampoo">Add-On: Organic Shampoo - ₱50.00</option>
-                    <option value="50" data-name="Dog Conditioner">Add-On: Conditioner - ₱50.00</option>
+                    <option value="450" data-name="Dog Full Grooming" data-value="1">Full Grooming - ₱450.00</option>
+                    <option value="300" data-name="Dog Dematting" data-value="2">Dematting - ₱300.00</option>
+                    <option value="250" data-name="Dog Bath & Blowdry" data-value="4">Bath & Blowdry - ₱250.00</option>
+                    <option value="500" data-name="Dog Special Cut" data-value="8">Special Cut - ₱500.00</option>
+                    <option value="50" data-name="Dog Organic Shampoo" data-value="16">Add-On: Organic Shampoo - ₱50.00</option>
+                    <option value="50" data-name="Dog Conditioner" data-value="32">Add-On: Conditioner - ₱50.00</option>
                 </optgroup>
                 <optgroup label="Cat Services">
-                    <option value="800" data-name="Cat Full Grooming">Full Grooming - ₱800.00</option>
-                    <option value="600" data-name="Cat Dematting">Dematting - ₱600.00</option>
+                    <option value="800" data-name="Cat Full Grooming" data-value="64">Full Grooming - ₱800.00</option>
+                    <option value="600" data-name="Cat Dematting" data-value="128">Dematting - ₱600.00</option>
                 </optgroup>
             </select>
 
@@ -315,17 +317,58 @@
 
         <div class="btn-row">
             <button class="btn btn-back" onclick="switchPanel('panel-appointment')">Back</button>
-            <button class="btn" onclick="confirmAppointment()">Confirm Appointment</button>
+            <form id="sumbmissionForm">
+            <button type="submit" class="btn" onclick="confirmAppointment()">Confirm Appointment</button>
+            </form>
         </div>
     </div>
 
   </div>
+  <script type="module">
+    import {DemoAccount, DemoDb} from "./Account.js";
+    import Services from "./Constants.js";
+    globalThis.BookingValues = Services;
 
+    let account = new DemoAccount();
+    let db = new DemoDb();
+    if (account.UserLoggedIn == "true") {
+        const username = document.getElementById("Username");
+        username.innerHTML = localStorage.getItem("Email").split("@")[0];
+        const logoutButton = document.getElementsByClassName("logout-btn")[0];
+        logoutButton.addEventListener("click", (e) => {
+            account.LogOut();
+            window.reload();
+        });
+        const signIn = document.getElementById("SignIn");
+        signIn.remove();
+    } else {
+        const username = document.getElementById("Username");
+        const logoutButton = document.getElementsByClassName("logout-btn")[0];
+        username.remove();
+        logoutButton.remove();
+    }
+
+    
+    
+    document.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        let appointment = globalThis.AppointmentArgs;
+        // Done this to update timestamp correctly
+        appointment = db.CreateOrder(appointment.Data[0], appointment.Data[1],
+            appointment.Data[2], appointment.Timestamp);
+        
+        window.location.replace(`Receipt.html?ordernumber=${appointment.OrderNumber}`
+            + `&timestamp=${appointment.Timestamp}&orders=${appointment.Data[0]}`
+            + `&pets=${appointment.Data[1]}&bigpets=${appointment.Data[2]}`);
+    });
+  </script>
   <script>
     let cart = [];
     let selectedDate = null;
     let selectedTime = null;
     let selectedMethod = null;
+    let unixTimestamp = 0;
 
     // --- SETUP CALENDAR ---
     function initCalendar() {
@@ -388,7 +431,7 @@
                 // RETURN UNIX TIMESTAMP
                 // Logic: Combine selectedDate string + timeStr -> Date object -> Unix
                 const dateTime = new Date(`${selectedDate} ${timeStr}`);
-                const unixTimestamp = Math.floor(dateTime.getTime() / 1000);
+                unixTimestamp = Math.floor(dateTime.getTime() / 1000);
                 console.log("Selected Unix Timestamp:", unixTimestamp); // Use this for backend!
                 
                 document.getElementById('selected-time-display').innerText = `${selectedDate} @ ${timeStr}`;
@@ -408,7 +451,8 @@
             name: option.getAttribute('data-name'),
             price: parseFloat(option.value),
             qty: 1,
-            heavy: 0
+            heavy: 0,
+            enum: parseInt(option.getAttribute("data-value"))
         };
         
         cart.push(service);
@@ -444,7 +488,10 @@
         const item = cart.find(x => x.id === id);
         if(item) {
             let num = parseInt(val);
-            if(field === 'qty' && num < 1) num = 1;
+            if(field === 'qty' && num < 1)
+                num = 1;
+            if(field === 'qty' && num > 7)
+                num = 7; // Max 7
             if(field === 'heavy') {
                 if(num < 0) num = 0;
                 if(num > item.qty) num = item.qty; // Can't have more heavy pets than total pets
@@ -480,12 +527,25 @@
         let surchargeTotal = 0;
         let html = '';
 
+        let appointment = {
+            OrderNumber: Math.random() * 1e6,
+            Data: [0, 0, 0],
+            Timestamp: unixTimestamp,
+            form: document.getElementById("submissionForm")
+        };
         cart.forEach(item => {
             const baseCost = item.price * item.qty;
             // 5% surcharge for heavy pets logic
             // Formula: (Base Price * 0.05) * Number of Heavy Pets
             const surcharge = (item.price * 0.05) * item.heavy;
             
+            if (globalThis.BookingValues[item.enum] !== undefined) {
+                if (Math.floor(appointment.Data[0]/item.enum) % 2 == 0)
+                    appointment.Data[0] += item.enum;
+                appointment.Data[1] += item.qty << 3*Math.floor(Math.log2(item.enum));
+                appointment.Data[2] += item.heavy << 3*Math.floor(Math.log2(item.enum));
+            }
+
             subtotal += baseCost;
             surchargeTotal += surcharge;
 
@@ -501,6 +561,7 @@
         document.getElementById('inv-subtotal').innerText = "₱" + subtotal.toFixed(2);
         document.getElementById('inv-surcharge').innerText = "₱" + surchargeTotal.toFixed(2);
         document.getElementById('inv-total').innerText = "₱" + (subtotal + surchargeTotal).toFixed(2);
+        globalThis.AppointmentArgs = appointment;
     }
 
     function selectMethod(el, name) {
@@ -512,7 +573,6 @@
     function confirmAppointment() {
         if(!selectedMethod) { alert("Please select a payment method."); return; }
         alert("Appointment Confirmed via " + selectedMethod + "!");
-        location.reload();
     }
 
     // Initialize

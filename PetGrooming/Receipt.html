@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pet Avenue - Official Receipt</title>
+  <link rel="icon" type="image/x-icon" href="SiteIcon.ico"/>
   <style>
     :root {
       --main: #84BD4E;
@@ -249,16 +250,17 @@
 
   <header>
     <div class="logo-container">
-      <img src="https://media.discordapp.net/attachments/1417383665993777195/1451214925233000578/20251218_220943.png?ex=69455cb8&is=69440b38&hm=5e6dc449e7cb4a4a2ac5d5ffa4bacbf91f6bf1c49e2a4a0be5b654ae92b23512&=&format=webp&quality=lossless&width=766&height=766" alt="Pet Avenue Logo" style="height:48px; width:auto;">
+      <img src="SiteIcon.webp" alt="Pet Avenue Logo" style="height:48px; width:auto;">
       <h1>Pet Avenue</h1>
     </div>
     <nav>
-      <a href="index.html">Home</a>
+      <a href="Home.html">Home</a>
       <a href="Pet Avenue Services.html">Services</a>
       <a href="Pet Avenue Info.html">About Us</a>
-      <a href="#">Message Us</a>
-      <a href="#">username</a>
+      <a href="https://mail.google.com/mail/?view=cm&to=insideinsidecloud@gmail.com&su=Pet%20Avenue%20Customer%20Support&body=Write%20your%20concern%20here" target="_blank">Message Us</a>
+      <a href="User.html" id="Username">username</a>
       <a href="#" class="logout-btn">Log-out</a>
+      <a href="Login.html" id="SignIn">Sign In</a>
     </nav>
   </header>
 
@@ -326,10 +328,82 @@
       </div>
     </div>
 
-    <a href="Pet Avenue User.html" class="btn-action">Back to your Page</a>
+    <a href="Home.html" class="btn-action">Back to your Page</a>
   </div>
 
-  <script>
+  <script type="module">
+    import Services from "./Constants.js";
+    import {DemoAccount} from "./Account.js";
+
+    const NIRCVATRATE = 0.12;
+
+    // Not AI. 100% self-torture...
+    function GenerateReceipt() {
+      // Get arguments passed via ?|&=
+      let searchQuery = window.location.search;
+      let searchArgs = new URLSearchParams(searchQuery);
+      let queries = Object.fromEntries(searchArgs.entries());
+      
+      // Set Order # (Yes, I copied the AI code below.)
+      document.getElementById('r-order-num').innerText = queries.ordernumber;
+      
+      // Current Date
+      let timeNow = new Date();
+      document.getElementById('r-date').innerText = timeNow.toLocaleDateString();
+
+      // timestamp to Appointment Date
+      let appointmentDate = new Date(queries.timestamp);
+      let timeString = appointmentDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      document.getElementById('r-appt').innerText =
+        `${appointmentDate.toLocaleDateString()} ${timeString}`;
+
+      // Oh no
+      let htmlToAppend = "";
+      let subtotal = 0;
+      for (let i = 0; i <= 8; i++) {
+        let step = (i == 0) ? queries.orders % 2 : queries.orders & (1 << i);
+        let item = 0;
+        // Black magic I learned in C
+        if ((item = Services[step]) != undefined) {
+          let petCount = (i == 0) ? queries.pets % 8 : (queries.pets >> (3 * i)) % 8;
+          let bigPetCount = (i == 0) ? queries.bigpets % 8 : (queries.bigpets >> (3 * i)) % 8;
+          bigPetCount = (bigPetCount > petCount) ? petCount : bigPetCount; // (pet - bigPet) >= 0 
+          // Compute total amount
+          let totalPrice = petCount * item.Price; // Get the price for small dogs
+          totalPrice += 0.05 * bigPetCount * item.Price; // Heavy Pet surcharge (5%)
+          subtotal += totalPrice; // Add to subtotal for receipt
+
+          // Add innerHtml
+          htmlToAppend += `
+          <div class="item-row">
+            <span>${item.Name}</span>
+            <span>${totalPrice.toFixed(2)}</span>
+            </div>
+            `;
+          }
+        }
+        document.getElementById('r-items').innerHTML = htmlToAppend;
+
+        // BIR NIRC (National Internal Revenue Code of 1997) shenanigans
+        // (Sec. 237, Paragraph 3)
+        let vatableSales = subtotal / (NIRCVATRATE + 1); // Divide subtotal by 112% to get price to inflate with VAT
+        let vatAmount = subtotal - vatableSales; // Math won't add up if i just did subtotal * NIRCVATRATE
+
+        // Everything else here were copied from the AI's original function page.
+
+        // Show VAT
+        document.getElementById('r-subtotal').innerText = subtotal.toFixed(2);
+        document.getElementById('r-vatable').innerText = vatableSales.toFixed(2);
+        document.getElementById('r-vat-amt').innerText = vatAmount.toFixed(2);
+        document.getElementById('r-total-sales').innerText = subtotal.toFixed(2);
+        
+        // Accounting shenanigans
+        document.getElementById('r-less-vat').innerText = `(${vatAmount.toFixed(2)})`;
+        document.getElementById('r-add-vat').innerText = vatAmount.toFixed(2);
+        document.getElementById('r-grand-total').innerText = "PHP " + subtotal.toFixed(2);
+    }
+    
+    // Obsolete function
     function generateRandomReceipt() {
       // 1. Generate Order Number
       const orderNum = Math.floor(100000 + Math.random() * 900000);
@@ -392,7 +466,25 @@
       document.getElementById('r-grand-total').innerText = "PHP " + subtotal.toFixed(2);
     }
 
-    window.onload = generateRandomReceipt;
+    window.onload = GenerateReceipt;
+
+    let account = new DemoAccount();
+    if (account.UserLoggedIn == "true") {
+      const username = document.getElementById("Username");
+      username.innerHTML = localStorage.getItem("Email").split("@")[0];
+      const logoutButton = document.getElementsByClassName("logout-btn")[0];
+      logoutButton.addEventListener("click", (e) => {
+        account.LogOut();
+        window.reload();
+      });
+      const signIn = document.getElementById("SignIn");
+      signIn.remove();
+    } else {
+      const username = document.getElementById("Username");
+      const logoutButton = document.getElementsByClassName("logout-btn")[0];
+      username.remove();
+      logoutButton.remove();
+    }
   </script>
 
 </body>

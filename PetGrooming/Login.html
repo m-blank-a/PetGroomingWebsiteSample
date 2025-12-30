@@ -262,7 +262,7 @@
         <button type="button" class="btn btn-signup" onclick="window.location.assign('SignUp.html')">Sign Up for an Account</button>
       </form>
 
-      <a href="index.html" class="back-home">Back to Home</a>
+      <a href="Home.html" class="back-home">Back to Home</a>
     </div>
 
     <!-- Loading/Success Panel -->
@@ -299,7 +299,7 @@
       statusIndicator.innerHTML = "✓";
       statusPanel.classList.add('visible');
       setTimeout(() => {
-        window.history.go(-2);
+        window.location.assign("User.html");
       }, 500);
     }
 
@@ -315,11 +315,12 @@
       setTimeout(() => {
         const chance = Math.random();
         if (account.PasswordValid(usernameField.value, passwordField.value)) {
+          account.LogIn(usernameField.value, passwordField.value);
           showSuccess();
         } else {
           statusPanel.classList.remove('visible');
           loginPanel.classList.remove('hidden');
-          if (account.EmailMatch(usernameField.value))
+          if (!account.EmailMatch(usernameField.value))
             showError('username');
           else
             showError('password');

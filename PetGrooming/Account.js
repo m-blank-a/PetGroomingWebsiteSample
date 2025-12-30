@@ -6,7 +6,10 @@ var ConstructedOnce = {
     DemoDb: false,
 }
 
+// Demo account registration system
+// (no database)
 class DemoAccount {
+
     #isloggedIn;
     
     get UserLoggedIn() {
@@ -23,6 +26,7 @@ class DemoAccount {
         localStorage.setItem("Password", str);
     }
     
+    // Create a DemoAccount singleton
     constructor() {
         if (!ConstructedOnce.DemoAccount) {
             this.#isloggedIn =  localStorage.getItem("LoggedIn");
@@ -38,14 +42,18 @@ class DemoAccount {
     PasswordValid(email, password) {
         return this.EmailMatch(email) && password === localStorage.getItem("Password");
     }
+
     LogOut() {
         this.#isloggedIn = false;
         localStorage.setItem("LoggedIn", "false");
     }
+
     LogIn(email, password) {
         if (this.PasswordValid(email, password)) {
             this.#isloggedIn = true;
             localStorage.setItem("LoggedIn", "true");
+        } else {
+            localStorage.setItem("LoggedIn", "false");
         }
     }
     SignUp(email, password) {
@@ -64,6 +72,11 @@ class DemoDb {
         if (this.#data == null) {
             this.#data = [];
         }
+    }
+
+    get Orders() {
+        this.GetExistingOrders();
+        return this.#data;
     }
 
     constructor() {

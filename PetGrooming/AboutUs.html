@@ -186,8 +186,16 @@
       justify-content: center;
       align-items: center;
       flex-shrink: 0;
+      overflow: hidden;
     }
     .profile-circle svg { width: 60px; height: 60px; fill: white; }
+
+    .profile-circle > img {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      object-fit: fill;
+    }
 
     .team-card h3 {
       font-size: 18px;
@@ -300,7 +308,7 @@
       <a href="https://mail.google.com/mail/?view=cm&to=insideinsidecloud@gmail.com&su=Pet%20Avenue%20Customer%20Support&body=Write%20your%20concern%20here" target="_blank">Message Us</a>
       <a href="User.html" id="Username">username</a>
       <a href="#" class="logout-btn">Log-out</a>
-      <a href="Login.html" id="SignIn">Sign In</a>
+      <a href="Login.html" id="SignIn" class="highlight-yellow">Sign In</a>
     </nav>
   </header>
 
@@ -320,7 +328,9 @@
 
       <div class="cards-wrapper" id="carousel">
         <div class="team-card" data-index="0">
-          <div class="profile-circle"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+          <div class="profile-circle">
+            <img src="assets/magsayo.png"/>
+          </div>
           <h3>Stephen Christian Magsayo</h3>
           <div class="role-container">
             <div class="role-trigger">DevOps Project Manager</div>
@@ -331,8 +341,10 @@
           </div>
         </div>
         <div class="team-card" data-index="1">
-          <div class="profile-circle"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
-          <h3>Karol Josef Torregosa</h3>
+          <div class="profile-circle">
+            <img src="assets/torregosa.png"/>
+          </div>
+          <h3>Kkarol Josef Torregosa</h3>
           <div class="role-container">
             <div class="role-trigger">Lead UI/UX Designer</div>
             <div class="role-modal">
@@ -342,7 +354,9 @@
           </div>
         </div>
         <div class="team-card" data-index="2">
-          <div class="profile-circle"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+          <div class="profile-circle">
+            <img src="assets/biton.png"/>
+          </div>
           <h3>Stephen Biton, Jr.</h3>
           <div class="role-container">
             <div class="role-trigger">Frontend Developer</div>
@@ -353,7 +367,9 @@
           </div>
         </div>
         <div class="team-card" data-index="3">
-          <div class="profile-circle"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+          <div class="profile-circle">
+            <img src="assets/lofranco.png"/>
+          </div>
           <h3>Leur Matthew Lofranco</h3>
           <div class="role-container">
             <div class="role-trigger">Frontend Developer</div>
@@ -364,7 +380,9 @@
           </div>
         </div>
         <div class="team-card" data-index="4">
-          <div class="profile-circle"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+          <div class="profile-circle">
+            <img src="assets/villavelez.png"/>
+          </div>
           <h3>Walter Villavelez</h3>
           <div class="role-container">
             <div class="role-trigger">QA Tester</div>

@@ -1,0 +1,14 @@
+_old/
+
+# Never gonna touch PHP again :>
+*.php
+
+PetGrooming/res
+
+# This contains the images used
+# for people involved in this
+# project + service icons.
+PetGrooming/assets
+
+*.ico
+*.webp

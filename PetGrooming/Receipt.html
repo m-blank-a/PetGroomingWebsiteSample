@@ -259,8 +259,8 @@
       <a href="Pet Avenue Info.html">About Us</a>
       <a href="https://mail.google.com/mail/?view=cm&to=insideinsidecloud@gmail.com&su=Pet%20Avenue%20Customer%20Support&body=Write%20your%20concern%20here" target="_blank">Message Us</a>
       <a href="User.html" id="Username">username</a>
-      <a href="#" class="logout-btn">Log-out</a>
-      <a href="Login.html" id="SignIn">Sign In</a>
+      <a href="" class="logout-btn">Log-out</a>
+      <a href="Login.html" id="SignIn" class="highlight-yellow">Sign In</a>
     </nav>
   </header>
 
@@ -328,7 +328,7 @@
       </div>
     </div>
 
-    <a href="Home.html" class="btn-action">Back to your Page</a>
+    <a onclick="window.history.back()" class="btn-action">Back to your Page</a>
   </div>
 
   <script type="module">
@@ -352,7 +352,7 @@
       document.getElementById('r-date').innerText = timeNow.toLocaleDateString();
 
       // timestamp to Appointment Date
-      let appointmentDate = new Date(queries.timestamp);
+      let appointmentDate = new Date(Number(queries.timestamp * 1000));
       let timeString = appointmentDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
       document.getElementById('r-appt').innerText =
         `${appointmentDate.toLocaleDateString()} ${timeString}`;

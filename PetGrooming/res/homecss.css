@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pet Avenue</title>
-  <link rel="icon" type="image/x-icon" href="SiteIcon.ico"/>
-  <style>
-    :root {
+:root {
       --main: #84BD4E;
       --dark: #2f3a2e;
       --light: #f6fbf2;
@@ -211,12 +203,10 @@
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 30px;
     }
-    
+
     .products iframe {
       position: relative;
-      margin-left: auto;
-      margin-right: auto;
-      width: 50vw;
+      width: 100%;
       height: 50vh;
       border: none;
     }
@@ -227,79 +217,3 @@
       text-align: center;
       padding: 30px 20px;
     }
-  </style>
-</head>
-<body>
-
-  <header>
-    <div class="logo-container">
-      <img src="SiteIcon.webp" alt="Logo" style="height:48px;">
-      <h1>Pet Avenue</h1>
-    </div>
-    <nav>
-      <a href="#">Home</a>
-      <a href="Services.html">Services</a>
-      <a href="AboutUs.html">About Us</a>
-      <a href="https://mail.google.com/mail/?view=cm&to=insideinsidecloud@gmail.com&su=Pet%20Avenue%20Customer%20Support&body=Write%20your%20concern%20here" target="_blank">Message Us</a>
-      <a href="User.html" id="Username">username</a>
-      <a href="" class="logout-btn">Log-out</a>
-      <a href="Login.html" id="SignIn" class="highlight-yellow">Sign In</a>
-    </nav>
-  </header>
-
-  <div class="hero-container">
-    <section class="hero" id="homeHero">
-      <h2>Your Pet's <span class="highlight-yellow">Happy</span> Place</h2>
-      <p>Quality dog and cat grooming services for everyone!</p>
-      <a href="Booking.html" class="btn" id="shopBtn">Book Now</a>
-      <div class="scroll-indicator">↓ Scroll to Explore More ↓</div>
-    </section>
-  </div>
-
-  <div class="content-area">
-    <section class="section">
-      <h3 style="text-align:center; font-size: 32px; margin-bottom: 50px;">Popular Affiliate Products</h3>
-      <div class="products">
-        <iframe src="AmazonAffiliateProducts.html"></iframe>
-      </div>
-    </section>
-
-    <footer>
-      <p>© 2025 Pet Avenue. All rights reserved.</p>
-    </footer>
-  </div>
-
-  <script type="module">
-    import {DemoAccount} from "./Account.js";
-    window.addEventListener('scroll', () => {
-      const hero = document.getElementById('homeHero');
-      const scrollY = window.scrollY;
-      
-      if (scrollY > 200) {
-        hero.classList.add('shrunk');
-      } else {
-        hero.classList.remove('shrunk');
-      }
-    });
-
-    let account = new DemoAccount();
-    if (account.UserLoggedIn == "true") {
-      console.log(account.UserLoggedIn);
-      const username = document.getElementById("Username");
-      username.innerHTML = localStorage.getItem("Email").split("@")[0];
-      const logoutButton = document.getElementsByClassName("logout-btn")[0];
-      logoutButton.addEventListener("click", (e) => {
-        account.LogOut();
-        window.reload();
-      });
-      const signIn = document.getElementById("SignIn");
-      signIn.remove();
-    } else {
-      const username = document.getElementById("Username");
-      const logoutButton = document.getElementsByClassName("logout-btn")[0];
-      username.remove();
-      logoutButton.remove();
-    }
-  </script>
-</body>
-</html>
